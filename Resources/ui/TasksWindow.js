@@ -39,17 +39,21 @@ function TasksWindow(){
 			var old_focus = new Date(Ti.App.Properties.getObject('focus_date'));
 			var new_focus = old_focus.setDate(old_focus.getDate()+1); // increment date
 			Ti.App.Properties.setObject('focus_date',new_focus);
-			self_title.setText(prettyDate(new_focus));
 			
 		} // if swipe right then decrement date 
 		else if (e.direction == 'right'){
 			var old_focus = new Date(Ti.App.Properties.getObject('focus_date'));
 			var new_focus = old_focus.setDate(old_focus.getDate()-1); // decrement date
 			Ti.App.Properties.setObject('focus_date',new_focus);
-			self_title.setText(prettyDate(new_focus));
 			
 		}
 		
+		/*
+		 * Update information, this will do nothing if the swipe wasn't left or right
+		 */
+		up_date = new Date(Ti.App.Properties.getObject('focus_date')); // get it?
+		self_title.setText(prettyDate(up_date));
+		tasks_table.setData(db.daylist(up_date));
 	});
 	
 	// the table view that will hold the tasks
