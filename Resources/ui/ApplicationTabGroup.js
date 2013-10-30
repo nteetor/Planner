@@ -1,27 +1,34 @@
+var TasksWindow = require('ui/TasksWindow');
+var CalendarWindow = require('ui/CalendarWindow');
+
 function ApplicationTabGroup(Window) {
 	//create module instance
 	var self = Ti.UI.createTabGroup();
 	
+	var task_tab = Ti.UI.createTab({
+		title: L('tasks'),
+		//icon: '/images/'		
+	});
+		
+	var cal_tab = Ti.UI.createTab({
+		title: L('calendar'),
+		//icon: '/images/'
+	});
+		
 	//create app tabs
-	var win1 = new Window(L('home')),
-		win2 = new Window(L('settings'));
+	var task_win = new TasksWindow(),
+		cal_win = new CalendarWindow();
 	
-	var tab1 = Ti.UI.createTab({
-		title: L('home'),
-		icon: '/images/KS_nav_ui.png',
-		window: win1
-	});
-	win1.containingTab = tab1;
+	// I believe we'll use this to point back i.e. for the back button
+	task_win.containingTab = task_tab;
+	cal_win.containingTab = cal_win;
 	
-	var tab2 = Ti.UI.createTab({
-		title: L('settings'),
-		icon: '/images/KS_nav_views.png',
-		window: win2
-	});
-	win2.containingTab = tab2;
-	
-	self.addTab(tab1);
-	self.addTab(tab2);
+	// Set windows for each tab
+	task_tab.window = task_win;
+	cal_tab.window = cal_win;
+		
+	self.addTab(task_tab);
+	self.addTab(cal_tab);
 	
 	return self;
 };
