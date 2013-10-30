@@ -10,4 +10,7 @@
 	<string name='edit'>Edit</string>
 	<string name='delete'>Delete</string>
 	<string name='done'>Done</string>
+	<string name='add_task'>Add Task</string>
+	<string name='ok'>OK</string>
+	<string name='cancel'>CANCEL</string>
 </resources>

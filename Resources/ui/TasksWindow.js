@@ -1,4 +1,5 @@
 var db = require('lib/db');
+var TasksView = require('ui/TasksView');
 
 var DEBUG = function(s) {
 	if (true) {
@@ -11,7 +12,7 @@ var dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 var monthName = ['January', 'February', 'March', 'April', 'May', 'June', 
 				 'July', 'August', 'September', 'October', 'November', 'December'];
 
-function TasksWindow(){
+function TasksWindow(containingTab){
 	var self = Ti.UI.createWindow({
 		title : L('tasks'),
 		backgroundColor : 'white',
@@ -49,22 +50,26 @@ function TasksWindow(){
 		}
 		
 		/*
-		 * Update information, this will do nothing if the swipe wasn't left or right
+		 * Update information, this will change nothing if the swipe wasn't left or right
 		 */
 		up_date = new Date(Ti.App.Properties.getObject('focus_date')); // get it?
 		self_title.setText(prettyDate(up_date));
 		tasks_table.setData(db.daylist(up_date));
 	});
 	
-	// the table view that will hold the tasks
+	/*
+	 * the table view that will hold the tasks
+	 */ 
 	tasks_list = db.daylist(new Date(Ti.App.Properties.getObject('focus_date')));
+	
 	var tasks_rows = new Array();
 	for (var i=0; i < tasks_list.length; i++){
 		tasks_rows[i] = Ti.UI.createTableViewRow(tasks_list[i]);
 	}
+	
 	var tasks_table = Ti.UI.createTableView({
 		data : tasks_rows,
-		top : 5,
+		top : 0,
 		scrollable : (tasks_rows.length > 8) 
 	});
 	
@@ -78,20 +83,28 @@ function TasksWindow(){
 	/*
 	 * The set of buttons for the task window toolbar
 	 */
+	// ADD button
 	var add = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.ADD
 	});
+	add.addEventListener('click', function(e){
+		var add_task = new TasksView(null);
+		containingTab.open(add_task);
+	});
 	
+	// EDIT button
 	var edit = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.EDIT,
 		enabled : (tasks_rows.length > 0)
 	});
 	
+	// DELETE button
 	var del = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.TRASH,
 		enabled : (tasks_rows.length > 0)
 	});
 	
+	// DONE button
 	var done = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.DONE,
 		enabled : false

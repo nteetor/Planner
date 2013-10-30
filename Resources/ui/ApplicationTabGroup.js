@@ -26,7 +26,8 @@ function ApplicationTabGroup(Window) {
 	});
 
 	//create app tabs
-	var task_win = new TasksWindow(), cal_win = new CalendarWindow();
+	var task_win = new TasksWindow(self), 
+		cal_win = new CalendarWindow();
 
 	// I believe we'll use this to point back i.e. for the back button
 	task_win.containingTab = task_tab;
