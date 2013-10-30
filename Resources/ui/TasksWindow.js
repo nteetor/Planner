@@ -58,9 +58,18 @@ function TasksWindow(){
 	
 	// the table view that will hold the tasks
 	tasks_list = db.daylist(new Date(Ti.App.Properties.getObject('focus_date')));
+	var tasks_rows = new Array();
+	for (var i=0; i < tasks_list.length; i++){
+		tasks_rows[i] = Ti.UI.createTableViewRow(tasks_list[i]);
+	}
 	var tasks_table = Ti.UI.createTableView({
-		data : tasks_list,
-		top : 5
+		data : tasks_rows,
+		top : 5,
+		scrollable : (tasks_rows.length > 8) 
+	});
+	
+	Ti.API.addEventListener('databaseUpdated',function(e){
+		tasks_table.setScrollable(tasks_rows.length > 8);
 	});
 	
 	// add the table to our window
@@ -75,16 +84,26 @@ function TasksWindow(){
 	
 	var edit = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.EDIT,
-		enabled : false
+		enabled : (tasks_rows.length > 0)
 	});
 	
 	var del = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.TRASH,
-		enabled : false
+		enabled : (tasks_rows.length > 0)
 	});
 	
 	var done = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.DONE,
+		enabled : false
+	});
+	
+	done.addEventListener('click',function(e){
+		del.setScrollable(false);
+		edit.setScrollable(false);
+	});
+	
+	edit.addEventListener('click',function(e){
+		done.setScrollable(true);
 	});
 	
 	// used to evenly distribute items on the toolbar
@@ -99,3 +118,9 @@ function TasksWindow(){
 }
 
 module.exports = TasksWindow;
+
+
+// Class Notes:
+	// there was some time and point in histroy where God created the Quran
+	// Is it blasphamas to say the Quran is created? Has it always been with God?
+	// if God can come up with new ideas then the calliphs can create new ideas. This defiles Allah's omnipotence, I think
