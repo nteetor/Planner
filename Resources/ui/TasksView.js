@@ -9,69 +9,148 @@ function TasksView(task) {
 	var self = Ti.UI.createWindow({
 		title : L('add_task'),
 		backgroundColor : 'white',
-		//modal : 'true',
-		layout : 'vertical'
+		navBarHidden : true
 	});
-	
+
 	self.setLeftNavButton(Ti.UI.createView({}));
+	
+	/*
+	 * Add task title label
+	 */
+	var tasks_label = Ti.UI.createLabel({
+		text : L('add_task'),
+		top : 80
+	});
 
 	/*
 	 * Bottom button bar section, includes OKAY and CANCEL buttons
 	 */
 	var ok = Ti.UI.createButton({
 		title : L('ok'),
-		bottom : 300,
-		left : 10
+		// bottom : 10,
+		// left : 10
 	});
 	ok.addEventListener('click', function(e) {
 		self.close();
 	});
-	
-	self.add(ok);
 
 	var cancel = Ti.UI.createButton({
 		title : L('cancel'),
-		bottom : 300,
-		right : 10
+		// bottom : 10,
+		// right : 10
 	});
 	cancel.addEventListener('click', function(e) {
 		self.close();
 	});
 
-	self.add(cancel);
-	
+	var flexSpace = Titanium.UI.createButton({
+		systemButton : Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE
+	});
+
+	var fixedSpace = Ti.UI.createButton({
+		width : 10,
+		systemButton : Ti.UI.iPhone.SystemButton.FIXED_SPACE
+	});
+
+	var button_bar = Titanium.UI.iOS.createToolbar({
+		items : [fixedSpace, ok, flexSpace, cancel, fixedSpace],
+		bottom : 10,
+		barColor : 'white'
+	});
+
 	/*
-	 * Task fields section, includes a tableview to hold the label-textfield pairs
-	 * also event listeners
-	 */
+	* Task fields section, includes a tableview to hold the label-textfield pairs
+	* also event listeners
+	*/
+	// some constants because I got sick of chaning variables
+	var LABEL_WIDTH = 130;
+	var LABEL_HEIGHT = 50;
+	var FIELD_LEFT_POS = LABEL_WIDTH + 20;
+
 	var row1 = Ti.UI.createTableViewRow({
 		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
 	});
 
 	var description_label = Ti.UI.createLabel({
-		text : 'Description',
-		left : 10
+		text : L('description'),
+		left : 10,
+		width : LABEL_WIDTH,
+		height : LABEL_HEIGHT,
+		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
+		font : {
+			fontSize : 24
+		}
 	});
 
 	var description_field = Ti.UI.createTextField({
-		left : 100,
+		left : FIELD_LEFT_POS,
 		right : 10,
 	});
 
 	row1.add(description_label);
 	row1.add(description_field);
 
-	var data = [row1];
+	var start_label = Ti.UI.createLabel({
+		text : L('start_time'),
+		left : 10,
+		width : LABEL_WIDTH,
+		height : LABEL_HEIGHT,
+		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
+		font : {
+			fontSize : 24
+		}
+	});
+
+	var start_field = Ti.UI.createTextField({
+		left : FIELD_LEFT_POS,
+		right : 10,
+	});
+
+	var row2 = Ti.UI.createTableViewRow({
+		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
+	});
+
+	row2.add(start_label);
+	row2.add(start_field);
+
+	var end_label = Ti.UI.createLabel({
+		text : L('end_time'),
+		left : 10,
+		width : LABEL_WIDTH,
+		height : LABEL_HEIGHT,
+		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
+		font : {
+			fontSize : 24
+		}
+	});
+
+	var end_field = Ti.UI.createTextField({
+		left : FIELD_LEFT_POS,
+		right : 10,
+	});
+
+	var row3 = Ti.UI.createTableViewRow({
+		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
+	});
+
+	row3.add(end_label);
+	row3.add(end_field);
+
+	var data = [row1, row2, row3];
 
 	// using a table we can achieve the label text-area look we want for this page
 	var fields_table = Ti.UI.createTableView({
 		data : data,
-		top : 100,
+		top : 120,
+		height : LABEL_HEIGHT*4,
 		backgroundColor : 'white',
-		style : Ti.UI.iPhone.TableViewStyle.GROUPED
+		style : Ti.UI.iPhone.TableViewStyle.GROUPED,
+		scrollable : false
 	});
 
-	//self.add(fields_table);
+	self.add(tasks_label);
+	self.add(fields_table);
+	self.add(button_bar);
 
 	return self;
 }
