@@ -8,38 +8,43 @@
 function TasksView(task) {
 	var self = Ti.UI.createWindow({
 		title : L('add_task'),
+		backgroundColor : 'white',
+		//modal : 'true',
 		layout : 'vertical'
 	});
+	
+	self.setLeftNavButton(Ti.UI.createView({}));
 
 	/*
 	 * Bottom button bar section, includes OKAY and CANCEL buttons
 	 */
 	var ok = Ti.UI.createButton({
-		title : L('ok')
+		title : L('ok'),
+		bottom : 300,
+		left : 10
 	});
 	ok.addEventListener('click', function(e) {
 		self.close();
 	});
+	
+	self.add(ok);
 
 	var cancel = Ti.UI.createButton({
-		title : L('cancel')
+		title : L('cancel'),
+		bottom : 300,
+		right : 10
 	});
 	cancel.addEventListener('click', function(e) {
 		self.close();
 	});
 
-	var bottom_bar = Ti.UI.createButtonBar({
-		style : Titanium.UI.iPhone.SystemButtonStyle.BAR,
-		bottom : 0
-	});
-
-	self.add(bottom_bar);
-
+	self.add(cancel);
+	
 	/*
 	 * Task fields section, includes a tableview to hold the label-textfield pairs
 	 * also event listeners
 	 */
-	var description_row = Ti.UI.createTableViewRow({
+	var row1 = Ti.UI.createTableViewRow({
 		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
 	});
 
@@ -53,18 +58,20 @@ function TasksView(task) {
 		right : 10,
 	});
 
-	description_row.add(description_label);
-	description_row.add(description_field);
+	row1.add(description_label);
+	row1.add(description_field);
 
-	var data = [description_row];
+	var data = [row1];
 
 	// using a table we can achieve the label text-area look we want for this page
 	var fields_table = Ti.UI.createTableView({
 		data : data,
+		top : 100,
+		backgroundColor : 'white',
 		style : Ti.UI.iPhone.TableViewStyle.GROUPED
 	});
 
-	self.add(fields_table);
+	//self.add(fields_table);
 
 	return self;
 }
