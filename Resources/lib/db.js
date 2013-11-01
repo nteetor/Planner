@@ -41,6 +41,7 @@ exports.daylist = function(_date) {
 // todo is a JS object containing description, start, and end properties
 
 exports.add = function(todo, sort) {
+	Ti.API.info('within add() todo.start '+todo.start);
 	var db = Ti.Database.open('Todos');
 	db.execute("INSERT INTO todos(date, desc, start, end, sort) VALUES(?,?,?,?,?)", toDateValue(todo.start), todo.description, todo.start.valueOf(), todo.end.valueOf(), sort);
 	var n = db.lastInsertRowId;
@@ -85,6 +86,8 @@ exports.reorder = function(ids) {
 // help function to translate a JS date to a unique integer
 
 function toDateValue(date) {
+	Ti.API.info('date within toDateValue: '+date);
+	//date = new Date(date);
 	var year = String(date.getFullYear());
 	var month = String(date.getMonth());
 	var date = String(date.getDate());

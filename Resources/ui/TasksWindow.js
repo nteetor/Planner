@@ -57,6 +57,9 @@ function TasksWindow(containingTab) {
 	});
 
 	Ti.API.addEventListener('databaseUpdated', function(e) {
+		Ti.API.info('database updated');
+		Ti.API.info(db.daylist);
+		tasks_table.setData(util.tasksToRows(db.daylist(new Date(Ti.App.Properties.getObject('focus_date')))));
 		tasks_table.setScrollable(tasks_list.length > 8);
 	});
 

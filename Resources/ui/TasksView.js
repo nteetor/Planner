@@ -1,5 +1,6 @@
 var db = require('lib/db');
 var Todo = require('lib/Todo');
+var util = require('lib/Util');
 
 /**
  * A function which opens a view to either:
@@ -39,9 +40,17 @@ function TasksView(task) {
 		title : L('ok'),
 	});
 	ok.addEventListener('click', function(e) {
-		var new_task = new Todo(start_field.value, end_field.value, description_field.value);
+		util.DEBUG('start field value is ' + start_field.value);
+		util.DEBUG('end field value is ' + end_field.value);
+
+		var new_task = new Todo({
+			'start' : start_field.value,
+			'end' : end_field.value,
+			'description' : description_field.value
+		});
+		Ti.API.info('new_task.start value is ' + new_task.start);
 		// I'm not entirely sure what the sort argument should be
-		db.add(new_task, db.daylist.length);
+		db.add(new_task, db.daylist().length);
 		self.close();
 	});
 
@@ -114,7 +123,7 @@ function TasksView(task) {
 	var start_field = Ti.UI.createTextField({
 		left : FIELD_LEFT_POS,
 		right : 10,
-		value : new Date()
+		value : (new Date()).getTime()
 	});
 
 	var row2 = Ti.UI.createTableViewRow({
@@ -138,7 +147,7 @@ function TasksView(task) {
 	var end_field = Ti.UI.createTextField({
 		left : FIELD_LEFT_POS,
 		right : 10,
-		value : new Date()
+		value : (new Date()).getTime()
 	});
 
 	var row3 = Ti.UI.createTableViewRow({
@@ -168,3 +177,6 @@ function TasksView(task) {
 }
 
 module.exports = TasksView;
+
+// The thoughts of sciencetists are more important than the blood of martys
+// awesomeness
