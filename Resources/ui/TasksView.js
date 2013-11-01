@@ -1,9 +1,14 @@
+var db = require('lib/db');
+var Todo = require('lib/Todo');
+
 /**
  * A function which opens a view to either:
  * 	1) add a new task to the focus_date's list of tasks
  *  2) edit a pre-existing task
  *
  * @param {Object} task, a pre-existing task to update
+ *
+ * CURRENTLY ONLY ADDS NEW TASKS
  */
 function TasksView(task) {
 	var self = Ti.UI.createWindow({
@@ -13,31 +18,36 @@ function TasksView(task) {
 	});
 
 	self.setLeftNavButton(Ti.UI.createView({}));
-	
+
 	/*
 	 * Add task title label
 	 */
 	var tasks_label = Ti.UI.createLabel({
 		text : L('add_task'),
-		top : 80
+		top : 80,
+		font : {
+			fontSize : 24
+		}
 	});
 
 	/*
-	 * Bottom button bar section, includes OKAY and CANCEL buttons
-	 */
+	* Button bar section
+	* includes OKAY and CANCEL buttons and the button bar itself
+	*/
+	// OK BUTTON
 	var ok = Ti.UI.createButton({
 		title : L('ok'),
-		// bottom : 10,
-		// left : 10
 	});
 	ok.addEventListener('click', function(e) {
+		var new_task = new Todo(start_field.value, end_field.value, description_field.value);
+		// I'm not entirely sure what the sort argument should be
+		db.add(new_task, db.daylist.length);
 		self.close();
 	});
 
+	// CANCEL BUTTON
 	var cancel = Ti.UI.createButton({
 		title : L('cancel'),
-		// bottom : 10,
-		// right : 10
 	});
 	cancel.addEventListener('click', function(e) {
 		self.close();
@@ -104,6 +114,7 @@ function TasksView(task) {
 	var start_field = Ti.UI.createTextField({
 		left : FIELD_LEFT_POS,
 		right : 10,
+		value : new Date()
 	});
 
 	var row2 = Ti.UI.createTableViewRow({
@@ -127,6 +138,7 @@ function TasksView(task) {
 	var end_field = Ti.UI.createTextField({
 		left : FIELD_LEFT_POS,
 		right : 10,
+		value : new Date()
 	});
 
 	var row3 = Ti.UI.createTableViewRow({
@@ -142,7 +154,7 @@ function TasksView(task) {
 	var fields_table = Ti.UI.createTableView({
 		data : data,
 		top : 120,
-		height : LABEL_HEIGHT*4,
+		height : LABEL_HEIGHT * 4,
 		backgroundColor : 'white',
 		style : Ti.UI.iPhone.TableViewStyle.GROUPED,
 		scrollable : false
