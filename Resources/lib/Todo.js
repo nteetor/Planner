@@ -1,14 +1,12 @@
 /**
  * 
- * @param {Object} start the starting time of the todo
- * @param {Object} end the ending time of the todo
- * @param {Object} description the description of the todo
+ * @param {Object} params is an abstract object from which only necessary fields will be extracted
  */
-function Todo(start, end, description) {
+function Todo(params) {
 	return {
-		'start' : start,
-		'end' : end,
-		'description' : description
+		'start' : params.start,
+		'end' : params.end,
+		'description' : params.description,
 	};
 }
 

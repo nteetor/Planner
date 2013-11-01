@@ -1,16 +1,11 @@
-var DEBUG = function(s) {
-	if (true) {
-		Ti.API.info('DEBUG: ' + s);	// set this to false to turn off debug output
-	}
-};
-
+var util = require('lib/Util');
 var TasksWindow = require('ui/TasksWindow');
 var CalendarWindow = require('ui/CalendarWindow');
 
 function ApplicationTabGroup(Window) {
 	// set the global focus date to the current date
 	Ti.App.Properties.setObject('focus_date', new Date());
-	DEBUG('focus date is ' + Ti.App.Properties.getObject('focus_date'));
+	util.DEBUG('focus date is ' + Ti.App.Properties.getObject('focus_date'));
 
 	//create module instance
 	var self = Ti.UI.createTabGroup();

@@ -1,16 +1,6 @@
 var db = require('lib/db');
 var TasksView = require('ui/TasksView');
-
-var DEBUG = function(s) {
-	if (true) {
-		Ti.API.info('DEBUG: ' + s);
-		// set this to false to turn off debug output
-	}
-};
-
-var dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-var monthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var util = require('lib/Util');
 
 function TasksWindow(containingTab) {
 	var self = Ti.UI.createWindow({
@@ -19,15 +9,9 @@ function TasksWindow(containingTab) {
 		layout : 'vertical'
 	});
 
-	var prettyDate = function(date) {
-		date = new Date(date);
-		return dayOfWeek[date.getDay()] + ', ' + monthName[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
-	};
-
 	var self_title = Ti.UI.createLabel({
-		text : prettyDate(Ti.App.Properties.getObject('focus_date')),
+		text : util.prettyDate(Ti.App.Properties.getObject('focus_date')),
 		top : 5,
-		//height : 20
 	});
 	self.add(self_title);
 
@@ -52,11 +36,12 @@ function TasksWindow(containingTab) {
 		}
 
 		/*
-		 * Update information, this will change nothing if the swipe wasn't left or right
-		 */
-		up_date = new Date(Ti.App.Properties.getObject('focus_date'));
+		* Update information, this will change nothing if the swipe wasn't left or right
+		*/
 		// get it?
-		self_title.setText(prettyDate(up_date));
+		up_date = new Date(Ti.App.Properties.getObject('focus_date'));
+
+		self_title.setText(util.prettyDate(up_date));
 		tasks_table.setData(db.daylist(up_date));
 	});
 
@@ -65,19 +50,14 @@ function TasksWindow(containingTab) {
 	 */
 	tasks_list = db.daylist(new Date(Ti.App.Properties.getObject('focus_date')));
 
-	var tasks_rows = new Array();
-	for (var i = 0; i < tasks_list.length; i++) {
-		tasks_rows[i] = Ti.UI.createTableViewRow(tasks_list[i]);
-	}
-
 	var tasks_table = Ti.UI.createTableView({
-		data : tasks_rows,
+		data : util.tasksToRows(tasks_list),
 		top : 0,
-		scrollable : (tasks_rows.length > 8)
+		scrollable : (tasks_list.length > 8)
 	});
 
 	Ti.API.addEventListener('databaseUpdated', function(e) {
-		tasks_table.setScrollable(tasks_rows.length > 8);
+		tasks_table.setScrollable(tasks_list.length > 8);
 	});
 
 	// add the table to our window
@@ -100,13 +80,13 @@ function TasksWindow(containingTab) {
 	// EDIT button
 	var edit = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.EDIT,
-		enabled : (tasks_rows.length > 0)
+		enabled : (tasks_list.length > 0)
 	});
 
 	// DELETE button
 	var del = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.TRASH,
-		enabled : (tasks_rows.length > 0)
+		enabled : (tasks_list.length > 0)
 	});
 
 	// DONE button
@@ -130,7 +110,7 @@ function TasksWindow(containingTab) {
 	});
 
 	// set the toolbar for our window using the above buttons
-	self.setToolbar([add, flexSpace, edit, flexSpace, del, flexSpace, done], params={
+	self.setToolbar([add, flexSpace, edit, flexSpace, del, flexSpace, done], params = {
 		animated : false
 	});
 
