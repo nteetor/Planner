@@ -12,12 +12,12 @@ function ApplicationTabGroup(Window) {
 
 	var task_tab = Ti.UI.createTab({
 		title : L('tasks'),
-		//icon: '/images/'
+		icon: '/images/notepad_icon.png'
 	});
 
 	var cal_tab = Ti.UI.createTab({
 		title : L('calendar'),
-		//icon: '/images/'
+		icon: '/images/calendar_icon.png'
 	});
 
 	//create app tabs
