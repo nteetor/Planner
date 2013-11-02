@@ -41,7 +41,7 @@ function TasksWindow(containingTab) {
 		up_date = new Date(Ti.App.Properties.getObject('focus_date'));
 
 		self_title.setText(util.prettyDate(up_date));
-		tasks_table.setData(db.daylist(up_date));
+		tasks_table.setData(util.tasksToRows(db.daylist(up_date)));
 	});
 
 	/*
@@ -49,19 +49,26 @@ function TasksWindow(containingTab) {
 	 */
 	tasks_list = db.daylist(new Date(Ti.App.Properties.getObject('focus_date')));
 
+	// TABLE OF TASKS (for a particular day)
 	var tasks_table = Ti.UI.createTableView({
 		data : util.tasksToRows(tasks_list),
 		top : 0,
-		scrollable : (tasks_list.length > 8)
+		scrollable : (tasks_list.length > 8),
+		moveable : true,
+		//editable : true
 	});
 
 	Ti.App.addEventListener('databaseUpdated', function(e) {
 		Ti.API.info('database updated');
 		updated_tasks = util.tasksToRows(db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))));
+		
 		tasks_table.setData(updated_tasks);
 		tasks_table.setScrollable(updated_tasks.length > 8);
-		edit.setEnabled((updated_tasks.length > 0));
-		del.setEnabled((updated_tasks.length > 0));
+		
+		// if there are now more than 0 tasks we need to enable to the edit and delete buttons
+		enable_status = (updated_tasks.length > 0);
+		edit.setEnabled(enable_status);
+		del.setEnabled(enable_status);
 	});
 
 	// add the table to our window
@@ -89,12 +96,25 @@ function TasksWindow(containingTab) {
 	
 	edit.addEventListener('click', function(e) {
 		done.setEnabled(true);
+		del.setEnabled(false);
+		
+		// make it so tasks can be rearranged.
+		// TODO: we need to change the sort value so the order is preserved. 
+		// HOWEVER, db.reorder() will do this for us, thanks Salter ... we'll have to remove these comments
+		// the saving of the order will take place in the 'done' event listener, sorry this is such a long comment
+		
+		tasks_table.setMoving(true);		
 	});
 
 	// DELETE button
 	var del = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.TRASH,
 		enabled : (tasks_list.length > 0)
+	});
+	
+	del.addEventListener('click',function(e){
+		edit.setEnabled(false);
+		done.setEnabled(true);
 	});
 
 	// DONE button
@@ -104,11 +124,15 @@ function TasksWindow(containingTab) {
 	});
 
 	done.addEventListener('click', function(e) {
-		del.setScrollable(false);
-		edit.setScrollable(false);
+		enable_status = (db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))).length > 0);
+		del.setEnabled(enable_status);
+		edit.setEnabled(enable_status);
+		done.setEnabled(false);
+		
+		// stop movability of tasks
+		tasks_table.setMoving(false);
 	});
 
-	
 
 	// used to evenly distribute items on the toolbar
 	var flexSpace = Titanium.UI.createButton({
