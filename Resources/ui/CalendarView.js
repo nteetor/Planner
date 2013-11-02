@@ -1,6 +1,6 @@
 // CalendarView
 // Author:  R. M. Salter
-
+var db = require('lib/db');
 var screenWidth = Ti.Platform.displayCaps.platformWidth;
 
 // exported function CalendarView returns a new monthly view
@@ -142,6 +142,7 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 		height : 'auto',
 		cb : _cb
 	});
+	
 	// determine the cal data
 	var isCurrentMonth = (yr == tyr && mo == tmo);
 	var isSelectedMonth = (yr == syr && mo == smo);
@@ -156,6 +157,7 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 	for ( i = 0; i < dayOfWeek; i++) {
 		mainView.add(new dayView({
 			day : dayNumber,
+			taskcount : db.daycount(new Date(yr, mo, dayNumber)),
 			color : '#8e959f',
 			current : 'no',
 		}));
@@ -167,7 +169,8 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 	var oldDay = {};
 	for ( i = 0; i < daysInMonth; i++) { 
 		var newDay = new dayView({ 
-			day : dayNumber, 
+			day : dayNumber,
+			taskcount : db.daycount(new Date(yr, mo, dayNumber)),
 			color : '#3a4756', 
 			current : 'yes', 
 		}); 
@@ -188,6 +191,7 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 	for ( i = 0; i > daysInNextMonth; i--) {
 		  mainView.add(new dayView({
 			 day : dayNumber,
+			 taskcount : db.daycount(new Date(yr, mo, dayNumber)),
 			 color : '#8e959f',
 			 current : 'no',
 		  }));
@@ -197,14 +201,14 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 	mainView.addEventListener('click', function(e) {
 		if (e.source.current == 'yes') {
 			select(e.source);
-			if (mainView.cb != null) mainView.cb(new Date(yr, mo, e.source.text));
+			if (mainView.cb != null) mainView.cb(new Date(yr, mo, e.source.getText()));
 		}
 	}); 
 	return mainView;
 
 	// function to highlight selected day
 	function select(dayView) {
-		if (isCurrentMonth && oldDay.text == dayOfMonthToday) {
+		if (isCurrentMonth && oldDay.getText() == dayOfMonthToday) {
 			oldDay.color = 'white';
 			oldDay.backgroundColor = '#FFFFF000';
 		} else {
@@ -213,7 +217,7 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 		}
 		oldDay.backgroundPaddingLeft = 0;
 		oldDay.backgroundPaddingBottom = 0;
-		if (isCurrentMonth && dayView.text == dayOfMonthToday) {
+		if (isCurrentMonth && dayView.getText() == dayOfMonthToday) {
 			dayView.backgroundColor = '#FFFF00FF';
 		} else {
 			dayView.backgroundColor = '#FFFF0000';
@@ -229,20 +233,44 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 // of month and color
 
 function dayView(e) {
-	var label = Ti.UI.createLabel({
-		current : e.current,
+	var self = Ti.UI.createView({
 		width : '46dp',
 		height : '44dp',
+		current: e.current,
+		color: e.color,
 		backgroundColor : '#FFDCDCDF',
+		borderColor: '#CCCCCC',
+		borderWidth: '1dp'
+	});
+
+	var dayLabel = Ti.UI.createLabel({
 		text : e.day,
 		textAlign : 'center',
-		color : e.color,
 		font : {
 			fontSize : 20,
 			fontWeight : 'bold'
 		}
 	});
-	return label;
+	var taskNotifier = Ti.UI.createLabel({
+		text: e.taskcount,
+		textAlign: 'center',
+		right: '2dp',
+		top: '2dp',
+		backgroundColor: 'red',
+		color: 'white',
+		font: {
+			fontSize: 9,
+			fontWeight: 'bold'
+		}
+	});
+		
+	self.getText = function() {
+		return dayLabel.text;
+	};
+	
+	self.add(dayLabel);
+	self.add(taskNotifier);
+	return self;
 }; 
 
 var dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

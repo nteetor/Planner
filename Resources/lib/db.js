@@ -37,6 +37,20 @@ exports.daylist = function(_date) {
 	return todos;
 };
 
+// return a count of tasks for the given date
+exports.daycount = function(_date) {
+	var todocount = 0;
+	var db = Ti.Database.open('Todos');
+	var result = db.execute('SELECT * FROM todos WHERE date = ? ORDER BY sort', toDateValue(_date));
+	while (result.isValidRow()) {
+		todocount++;
+		result.next();
+	}
+	result.close();
+	db.close();
+	return todocount;
+};
+
 // adds a new object at a particular sort position
 // todo is a JS object containing description, start, and end properties
 
