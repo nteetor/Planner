@@ -8,6 +8,7 @@ function CalendarWindow(openTaskDayFunction){
 	
 	var focus_date = Ti.App.Properties.getObject('focus_date');
 	Ti.App.Properties.addEventListener('change', function() {
+		focus_date = Ti.App.Properties.getObject('focus_date');
 		Ti.API.fireEvent('setCalDate', {date: new Date(Ti.App.Properties.getObject('focus_date'))});
 	});
 		
@@ -15,6 +16,13 @@ function CalendarWindow(openTaskDayFunction){
 		openTaskDayFunction(selected_date);
 	});
 	
+	self.addEventListener('swipe', function(e) {
+		if (e.direction == 'left') {
+			calendarView.shiftMonth('up');
+		} else if (e.direction == 'right') {
+			calendarView.shiftMonth('down');
+		}
+	});
 	self.add(calendarView);
 	return self;
 }

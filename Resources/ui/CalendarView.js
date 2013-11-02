@@ -23,6 +23,30 @@ function CalendarView(dis_date, sel_date, _cb) {
 	self.add(toolBar);
 	self.add(cal);
 	
+	// if 'up' increment month, 'down' decrement
+	self.shiftMonth = function(direction) {
+		if (direction == 'up') {
+			if (dmo == 11) {
+				dyr++;
+				dmo = 0;
+			} else {
+				dmo++;
+			}
+		} else if (direction == 'down') {
+			if (dmo == 0) {
+				dyr--;
+				dmo = 11;
+			} else {
+				dmo--;
+			}
+		}
+		toolBar = makeToolBar(dyr, dmo);		
+		cal = calendar(dyr, dmo, syr, smo, sda, tyr, tmo, tda, _cb);
+		self.removeAllChildren();
+		self.add(toolBar);
+		self.add(cal);
+	};
+	
 	Ti.API.addEventListener('setCalDate', function(e) {
 		if (sameDate(dis_date, e.date) && sameDate(sel_date, e.date)) return;
 		sel_date = e.date;
