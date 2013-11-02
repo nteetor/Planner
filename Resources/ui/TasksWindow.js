@@ -1,5 +1,5 @@
 var db = require('lib/db');
-var TasksView = require('ui/TasksView');
+var TasksView = require('ui/TaskView');
 var util = require('lib/Util');
 
 function TasksWindow(containingTab) {
