@@ -14,6 +14,11 @@ function TasksWindow(containingTab) {
 		top : 5,
 	});
 	self.add(self_title);
+	
+	self.setDay = function(new_date) {
+		self_title.setText(util.prettyDate(new_date));
+		tasks_table.setData(db.daylist(new_date));
+	};
 
 	self.addEventListener('swipe', function(e) {
 		// TODO: we need to consider when we decrement or increment into another month
@@ -38,10 +43,7 @@ function TasksWindow(containingTab) {
 		* Update information, this will change nothing if the swipe wasn't left or right
 		*/
 		// get it?
-		up_date = new Date(Ti.App.Properties.getObject('focus_date'));
-
-		self_title.setText(util.prettyDate(up_date));
-		tasks_table.setData(db.daylist(up_date));
+		self.setDay(new Date(Ti.App.Properties.getObject('focus_date')));
 	});
 
 	/*

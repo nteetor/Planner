@@ -19,10 +19,15 @@ function ApplicationTabGroup(Window) {
 		title : L('calendar'),
 		icon: '/images/calendar_icon.png'
 	});
+	
+	var openTaskFunction = function(date) {
+		task_win.setDay(date);
+		self.setActiveTab(task_tab);
+	};
 
 	//create app tabs
 	var task_win = new TasksWindow(task_tab), 
-		cal_win = new CalendarWindow();
+		cal_win = new CalendarWindow(openTaskFunction);
 
 	// I believe we'll use this to point back i.e. for the back button
 	task_win.containingTab = task_tab;
