@@ -49,8 +49,9 @@ function TasksView(task) {
 			'description' : description_field.value
 		});
 		Ti.API.info('new_task.start value is ' + new_task.start);
+		
 		// I'm not entirely sure what the sort argument should be
-		db.add(new_task, db.daylist().length);
+		db.add(new_task, db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))).length);
 		self.close();
 	});
 

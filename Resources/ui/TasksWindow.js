@@ -55,11 +55,13 @@ function TasksWindow(containingTab) {
 		scrollable : (tasks_list.length > 8)
 	});
 
-	Ti.API.addEventListener('databaseUpdated', function(e) {
+	Ti.App.addEventListener('databaseUpdated', function(e) {
 		Ti.API.info('database updated');
-		Ti.API.info(db.daylist);
-		tasks_table.setData(util.tasksToRows(db.daylist(new Date(Ti.App.Properties.getObject('focus_date')))));
-		tasks_table.setScrollable(tasks_list.length > 8);
+		updated_tasks = util.tasksToRows(db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))));
+		tasks_table.setData(updated_tasks);
+		tasks_table.setScrollable(updated_tasks.length > 8);
+		edit.setEnabled((updated_tasks.length > 0));
+		del.setEnabled((updated_tasks.length > 0));
 	});
 
 	// add the table to our window
@@ -84,6 +86,10 @@ function TasksWindow(containingTab) {
 		systemButton : Titanium.UI.iPhone.SystemButton.EDIT,
 		enabled : (tasks_list.length > 0)
 	});
+	
+	edit.addEventListener('click', function(e) {
+		done.setEnabled(true);
+	});
 
 	// DELETE button
 	var del = Ti.UI.createButton({
@@ -102,9 +108,7 @@ function TasksWindow(containingTab) {
 		edit.setScrollable(false);
 	});
 
-	edit.addEventListener('click', function(e) {
-		done.setScrollable(true);
-	});
+	
 
 	// used to evenly distribute items on the toolbar
 	var flexSpace = Titanium.UI.createButton({

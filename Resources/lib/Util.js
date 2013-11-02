@@ -36,8 +36,10 @@ exports.prettyDate = function(date) {
  */
 exports.tasksToRows = function(tasks){
 	var tasks_rows = new Array();
-	for (var i = 0; i < tasks_list.length; i++) {
-		tasks_rows[i] = Ti.UI.createTableViewRow(tasks_list[i]);
+	for (var i = 0; i < tasks.length; i++) {
+		next_task = Ti.UI.createTableViewRow(tasks[i]);
+		next_task.setTitle(tasks[i].description);
+		tasks_rows[i] = next_task; 
 	}
 	return tasks_rows;
 };

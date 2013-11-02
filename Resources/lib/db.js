@@ -41,7 +41,7 @@ exports.daylist = function(_date) {
 // todo is a JS object containing description, start, and end properties
 
 exports.add = function(todo, sort) {
-	Ti.API.info('within add() todo.start '+todo.start);
+	Ti.API.info('within add() todo.start ');
 	var db = Ti.Database.open('Todos');
 	db.execute("INSERT INTO todos(date, desc, start, end, sort) VALUES(?,?,?,?,?)", toDateValue(todo.start), todo.description, todo.start.valueOf(), todo.end.valueOf(), sort);
 	var n = db.lastInsertRowId;
