@@ -29,6 +29,7 @@ function ApplicationTabGroup(Window) {
 		cal_win = new CalendarWindow(openTaskFunction);
 
 	// I believe we'll use this to point back i.e. for the back button
+	// TODO: are we using these?
 	task_win.containingTab = task_tab;
 	cal_win.containingTab = cal_win;
 

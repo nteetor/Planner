@@ -1,6 +1,7 @@
 var db = require('lib/db');
 var Todo = require('lib/Todo');
 var util = require('lib/Util');
+var TimePickerWindow = require('ui/timePickerWindow');
 
 /**
  * A function which opens a view to either:
@@ -11,12 +12,13 @@ var util = require('lib/Util');
  *
  * CURRENTLY ONLY ADDS NEW TASKS (instead of both editing and adding)
  */
-function TasksView(task) {
+function TaskView(task) {
 	var self = Ti.UI.createWindow({
 		title : L('add_task'),
 		backgroundColor : 'white',
 		navBarHidden : true
 	});
+	
 
 	self.setLeftNavButton(Ti.UI.createView({}));
 
@@ -25,7 +27,7 @@ function TasksView(task) {
 	 */
 	var tasks_label = Ti.UI.createLabel({
 		text : L('add_task'),
-		top : 80,
+		top : 40,
 		font : {
 			fontSize : 24
 		}
@@ -40,12 +42,9 @@ function TasksView(task) {
 		title : L('ok'),
 	});
 	ok.addEventListener('click', function(e) {
-		util.DEBUG('start field value is ' + start_field.value);
-		util.DEBUG('end field value is ' + end_field.value);
-
 		var new_task = new Todo({
-			'start' : start_field.value,
-			'end' : end_field.value,
+			'start' : task.start,
+			'end' : task.end,
 			'description' : description_field.value
 		});
 		Ti.API.info('new_task.start value is ' + new_task.start);
@@ -106,7 +105,7 @@ function TasksView(task) {
 	row1.add(description_label);
 	row1.add(description_field);
 
-	var start_label = Ti.UI.createLabel({
+	var startLabel = Ti.UI.createLabel({
 		text : L('start_time'),
 		left : 10,
 		width : LABEL_WIDTH,
@@ -117,24 +116,33 @@ function TasksView(task) {
 		}
 	});
 	
-	var startPicker = Ti.UI.createPicker({
-		
-	});
-
-	var start_field = Ti.UI.createTextField({
+	var startValue = Ti.UI.createLabel({
+		text : task.start.toTimeString(),
 		left : FIELD_LEFT_POS,
-		right : 10,
-		value : (new Date()).getTime()
+		right: 10,
+		font : {
+			fontSize : 24
+		}
 	});
 
-	var row2 = Ti.UI.createTableViewRow({
+	var startRow = Ti.UI.createTableViewRow({
 		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
 	});
 
-	row2.add(start_label);
-	row2.add(start_field);
+	startRow.add(startLabel);
+	startRow.add(startValue);
+	
+	startRow.addEventListener('click', function() {
+		var timePicker = new TimePickerWindow(task.start, function(time) {
+			task.start = time;
+		});
+		timePicker.open();
+		timePicker.addEventListener('close', function() {
+			startValue.text = task.start.toTimeString();
+		});
+	});
 
-	var end_label = Ti.UI.createLabel({
+	var endLabel = Ti.UI.createLabel({
 		text : L('end_time'),
 		left : 10,
 		width : LABEL_WIDTH,
@@ -145,26 +153,38 @@ function TasksView(task) {
 		}
 	});
 
-	var end_field = Ti.UI.createTextField({
+	var endValue = Ti.UI.createLabel({
+		text : task.end.toTimeString(),
 		left : FIELD_LEFT_POS,
-		right : 10,
-		value : (new Date()).getTime()
+		right: 10,
+		font : {
+			fontSize : 24
+		}
 	});
 
-	var row3 = Ti.UI.createTableViewRow({
+	var endRow = Ti.UI.createTableViewRow({
 		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
 	});
+	
+	endRow.addEventListener('click', function() {
+		var timePicker = new TimePickerWindow(task.end, function(time) {
+			task.end = time;
+		});
+		timePicker.open();
+		timePicker.addEventListener('close', function() {
+			endValue.text = task.end.toTimeString();
+		});
+	});
 
-	row3.add(end_label);
-	row3.add(end_field);
+	endRow.add(endLabel);
+	endRow.add(endValue);
 
-	var data = [row1, row2, row3];
+	var data = [row1, startRow, endRow];
 
 	// using a table we can achieve the label text-area look we want for this page
 	var fields_table = Ti.UI.createTableView({
 		data : data,
-		top : 120,
-		height : LABEL_HEIGHT * 4,
+		top : 80,
 		backgroundColor : 'white',
 		style : Ti.UI.iPhone.TableViewStyle.GROUPED,
 		scrollable : false
@@ -177,7 +197,7 @@ function TasksView(task) {
 	return self;
 }
 
-module.exports = TasksView;
+module.exports = TaskView;
 
 // The thoughts of sciencetists are more important than the blood of martys
 // awesomeness

@@ -1,5 +1,5 @@
 var db = require('lib/db');
-var TasksView = require('ui/TaskView');
+var TaskView = require('ui/TaskView');
 var util = require('lib/Util');
 
 function TasksWindow(containingTab) {
@@ -99,10 +99,8 @@ function TasksWindow(containingTab) {
 		systemButton : Titanium.UI.iPhone.SystemButton.ADD
 	});
 	add.addEventListener('click', function(e) {
-		var add_task = new TasksView(null);
-		add_task.open({
-			modal : true
-		});
+		var add_task = new TaskView({start: focus_date, end: focus_date});
+		add_task.open();
 	});
 
 	// EDIT button
