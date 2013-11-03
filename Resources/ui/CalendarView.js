@@ -251,25 +251,29 @@ function dayView(e) {
 			fontWeight : 'bold'
 		}
 	});
-	var taskNotifier = Ti.UI.createLabel({
-		text: e.taskcount,
-		textAlign: 'center',
-		right: '2dp',
-		top: '2dp',
-		backgroundColor: 'red',
-		color: 'white',
-		font: {
-			fontSize: 9,
-			fontWeight: 'bold'
-		}
-	});
-		
+	
+	if (e.taskcount) {
+		var taskNotifier = Ti.UI.createLabel({
+			text: e.taskcount,
+			textAlign: 'center',
+			right: '2dp',
+			top: '2dp',
+			backgroundColor: 'red',
+			color: 'white',
+			font: {
+				fontSize: 9,
+				fontWeight: 'bold'
+			}
+		});
+		self.add(taskNotifier);
+	}
+
 	self.getText = function() {
 		return dayLabel.text;
 	};
 	
 	self.add(dayLabel);
-	self.add(taskNotifier);
+
 	return self;
 }; 
 
