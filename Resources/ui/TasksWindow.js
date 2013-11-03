@@ -14,15 +14,20 @@ function TasksWindow(containingTab) {
 		top : 5,
 	});
 	self.add(self_title);
-	
+
 	self.setDay = function(new_date) {
 		self_title.setText(util.prettyDate(new_date));
-		tasks_table.setData(db.daylist(new_date));
+		tasks_table.setData(util.tasksToRows(db.daylist(new_date)));
+	};
+	
+	self.setButtons = function(new_date){
+		var enable_status = (db.daycount(new_date) > 0);
+		edit.setEnabled(enable_status);
+		del.setEnabled(enable_status);
+		done.setEnabled(false); 
 	};
 
 	self.addEventListener('swipe', function(e) {
-		// TODO: we need to consider when we decrement or increment into another month
-		// THIS IS DONE AUTOMATICALLY, HELL YEAH
 
 		// if swipe left then increment the date
 		if (e.direction == 'left') {
@@ -30,7 +35,7 @@ function TasksWindow(containingTab) {
 			var new_focus = old_focus.setDate(old_focus.getDate() + 1);
 			// increment date
 			Ti.App.Properties.setObject('focus_date', new_focus);
-			
+
 		}// if swipe right then decrement date
 		else if (e.direction == 'right') {
 			var old_focus = new Date(Ti.App.Properties.getObject('focus_date'));
@@ -40,8 +45,8 @@ function TasksWindow(containingTab) {
 		}
 
 		/*
-		* Update information, this will change nothing if the swipe wasn't left or right
-		*/
+		 * Update information, this will change nothing if the swipe wasn't left or right
+		 */
 		self.setDay(new Date(Ti.App.Properties.getObject('focus_date')));
 	});
 
@@ -49,6 +54,11 @@ function TasksWindow(containingTab) {
 	 * the table view that will hold the tasks
 	 */
 	tasks_list = db.daylist(new Date(Ti.App.Properties.getObject('focus_date')));
+	
+	// construct list of ids, this is changed by a couple event listeners
+	task_ids = tasks_list.map(function(task) {
+		return task.id;
+	});
 
 	// TABLE OF TASKS (for a particular day)
 	var tasks_table = Ti.UI.createTableView({
@@ -62,11 +72,11 @@ function TasksWindow(containingTab) {
 	Ti.App.addEventListener('databaseUpdated', function(e) {
 		Ti.API.info('database updated');
 		updated_tasks = util.tasksToRows(db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))));
-		
+
 		tasks_table.setData(updated_tasks);
 		tasks_table.setScrollable(updated_tasks.length > 8);
-		
-		// if there are now more than 0 tasks we need to enable to the edit and delete buttons
+
+		// on database update we need to enable/disable buttons
 		enable_status = (updated_tasks.length > 0);
 		edit.setEnabled(enable_status);
 		del.setEnabled(enable_status);
@@ -94,17 +104,17 @@ function TasksWindow(containingTab) {
 		systemButton : Titanium.UI.iPhone.SystemButton.EDIT,
 		enabled : (tasks_list.length > 0)
 	});
-	
+
 	edit.addEventListener('click', function(e) {
 		done.setEnabled(true);
 		del.setEnabled(false);
-		
+
 		// make it so tasks can be rearranged.
-		// TODO: we need to change the sort value so the order is preserved. 
+		// TODO: we need to change the sort value so the order is preserved.
 		// HOWEVER, db.reorder() will do this for us, thanks Salter ... we'll have to remove these comments
 		// the saving of the order will take place in the 'done' event listener, sorry this is such a long comment
-		
-		tasks_table.setMoving(true);		
+
+		tasks_table.setMoving(true);
 	});
 
 	// DELETE button
@@ -112,10 +122,12 @@ function TasksWindow(containingTab) {
 		systemButton : Titanium.UI.iPhone.SystemButton.TRASH,
 		enabled : (tasks_list.length > 0)
 	});
-	
-	del.addEventListener('click',function(e){
+
+	del.addEventListener('click', function(e) {
 		edit.setEnabled(false);
 		done.setEnabled(true);
+
+		tasks_table.setEditable(true);
 	});
 
 	// DONE button
@@ -129,19 +141,22 @@ function TasksWindow(containingTab) {
 		del.setEnabled(enable_status);
 		edit.setEnabled(enable_status);
 		done.setEnabled(false);
-		
+
 		// stop movability of tasks
 		tasks_table.setMoving(false);
-	});
 
+		// stop editability of tasks
+		tasks_table.setEditable(false);
+		tasks_table.addEventListener('delete', function(e) {
+			db.del(e.rowData.id);
+		});
 
-	// used to evenly distribute items on the toolbar
-	var flexSpace = Titanium.UI.createButton({
-		systemButton : Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE
+		// use reorder() to save the order of possibly user adjusted tasks
+		db.reorder(task_ids);
 	});
 
 	// set the toolbar for our window using the above buttons
-	self.setToolbar([add, flexSpace, edit, flexSpace, del, flexSpace, done], params = {
+	self.setToolbar([add, util.flexSpace, edit, util.flexSpace, del, util.flexSpace, done], params = {
 		animated : false
 	});
 

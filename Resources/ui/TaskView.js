@@ -9,7 +9,7 @@ var util = require('lib/Util');
  *
  * @param {Object} task, a pre-existing task to update
  *
- * CURRENTLY ONLY ADDS NEW TASKS
+ * CURRENTLY ONLY ADDS NEW TASKS (instead of both editing and adding)
  */
 function TasksView(task) {
 	var self = Ti.UI.createWindow({
@@ -63,17 +63,13 @@ function TasksView(task) {
 		self.close();
 	});
 
-	var flexSpace = Titanium.UI.createButton({
-		systemButton : Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE
-	});
-
 	var fixedSpace = Ti.UI.createButton({
 		width : 10,
 		systemButton : Ti.UI.iPhone.SystemButton.FIXED_SPACE
 	});
 
 	var button_bar = Titanium.UI.iOS.createToolbar({
-		items : [fixedSpace, ok, flexSpace, cancel, fixedSpace],
+		items : [fixedSpace, ok, util.flexSpace, cancel, fixedSpace],
 		bottom : 10,
 		barColor : 'white'
 	});
