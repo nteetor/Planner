@@ -201,14 +201,14 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 	mainView.addEventListener('click', function(e) {
 		if (e.source.current == 'yes') {
 			select(e.source);
-			if (mainView.cb != null) mainView.cb(new Date(yr, mo, e.source.getText()));
+			if (mainView.cb != null) mainView.cb(new Date(yr, mo, e.source.text));
 		}
 	}); 
 	return mainView;
 
 	// function to highlight selected day
 	function select(dayView) {
-		if (isCurrentMonth && oldDay.getText() == dayOfMonthToday) {
+		if (isCurrentMonth && oldDay.text == dayOfMonthToday) {
 			oldDay.color = 'white';
 			oldDay.backgroundColor = '#FFFFF000';
 		} else {
@@ -217,7 +217,7 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 		}
 		oldDay.backgroundPaddingLeft = 0;
 		oldDay.backgroundPaddingBottom = 0;
-		if (isCurrentMonth && dayView.getText() == dayOfMonthToday) {
+		if (isCurrentMonth && dayView.text == dayOfMonthToday) {
 			dayView.backgroundColor = '#FFFF00FF';
 		} else {
 			dayView.backgroundColor = '#FFFF0000';
@@ -268,9 +268,7 @@ function dayView(e) {
 		self.add(taskNotifier);
 	}
 
-	self.getText = function() {
-		return dayLabel.text;
-	};
+	self.text = dayLabel.text;
 	
 	self.add(dayLabel);
 

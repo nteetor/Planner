@@ -20,8 +20,7 @@ function ApplicationTabGroup(Window) {
 		icon: '/images/calendar_icon.png'
 	});
 	
-	var openTaskFunction = function(date) {
-		task_win.setDay(date);
+	var openTaskFunction = function() {
 		self.setActiveTab(task_tab);
 	};
 

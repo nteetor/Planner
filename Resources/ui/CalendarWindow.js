@@ -9,11 +9,12 @@ function CalendarWindow(openTaskDayFunction){
 	var focus_date = Ti.App.Properties.getObject('focus_date');
 	Ti.App.Properties.addEventListener('change', function() {
 		focus_date = Ti.App.Properties.getObject('focus_date');
-		Ti.API.fireEvent('setCalDate', {date: new Date(Ti.App.Properties.getObject('focus_date'))});
+		Ti.API.fireEvent('setCalDate', {date: new Date(focus_date)});
 	});
 		
 	var calendarView = new CalendarView(focus_date, focus_date, function(selected_date){
-		openTaskDayFunction(selected_date);
+		Ti.App.Properties.setObject('focus_date', selected_date);
+		openTaskDayFunction();
 	});
 	
 	self.addEventListener('swipe', function(e) {

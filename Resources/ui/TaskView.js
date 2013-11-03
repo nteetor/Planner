@@ -116,6 +116,10 @@ function TasksView(task) {
 			fontSize : 24
 		}
 	});
+	
+	var startPicker = Ti.UI.createPicker({
+		
+	});
 
 	var start_field = Ti.UI.createTextField({
 		left : FIELD_LEFT_POS,

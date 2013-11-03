@@ -8,9 +8,15 @@ function TasksWindow(containingTab) {
 		backgroundColor : 'white',
 		layout : 'vertical'
 	});
-
+	
+	var focus_date = new Date(Ti.App.Properties.getObject('focus_date'));
+	Ti.App.Properties.addEventListener('change', function() {
+		focus_date = new Date(Ti.App.Properties.getObject('focus_date'));
+		self.setDay(focus_date);
+	});
+	
 	var self_title = Ti.UI.createLabel({
-		text : util.prettyDate(Ti.App.Properties.getObject('focus_date')),
+		text : util.prettyDate(focus_date),
 		top : 5,
 	});
 	self.add(self_title);
@@ -31,29 +37,29 @@ function TasksWindow(containingTab) {
 
 		// if swipe left then increment the date
 		if (e.direction == 'left') {
-			var old_focus = new Date(Ti.App.Properties.getObject('focus_date'));
-			var new_focus = old_focus.setDate(old_focus.getDate() + 1);
+			focus_date = new Date(focus_date.setDate(focus_date.getDate() + 1));
+
 			// increment date
-			Ti.App.Properties.setObject('focus_date', new_focus);
+			Ti.App.Properties.setObject('focus_date', focus_date);
 
 		}// if swipe right then decrement date
 		else if (e.direction == 'right') {
-			var old_focus = new Date(Ti.App.Properties.getObject('focus_date'));
-			var new_focus = old_focus.setDate(old_focus.getDate() - 1);
+			focus_date = new Date(focus_date.setDate(focus_date.getDate() - 1));
+			
 			// decrement date
-			Ti.App.Properties.setObject('focus_date', new_focus);
+			Ti.App.Properties.setObject('focus_date', focus_date);
 		}
 
 		/*
 		 * Update information, this will change nothing if the swipe wasn't left or right
 		 */
-		self.setDay(new Date(Ti.App.Properties.getObject('focus_date')));
+		self.setDay(focus_date);
 	});
 
 	/*
 	 * the table view that will hold the tasks
 	 */
-	tasks_list = db.daylist(new Date(Ti.App.Properties.getObject('focus_date')));
+	tasks_list = db.daylist(focus_date);
 	
 	// construct list of ids, this is changed by a couple event listeners
 	task_ids = tasks_list.map(function(task) {
@@ -71,7 +77,7 @@ function TasksWindow(containingTab) {
 
 	Ti.App.addEventListener('databaseUpdated', function(e) {
 		Ti.API.info('database updated');
-		updated_tasks = util.tasksToRows(db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))));
+		updated_tasks = util.tasksToRows(db.daylist(focus_date));
 
 		tasks_table.setData(updated_tasks);
 		tasks_table.setScrollable(updated_tasks.length > 8);
@@ -137,7 +143,7 @@ function TasksWindow(containingTab) {
 	});
 
 	done.addEventListener('click', function(e) {
-		enable_status = (db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))).length > 0);
+		enable_status = (db.daylist(focus_date).length > 0);
 		del.setEnabled(enable_status);
 		edit.setEnabled(enable_status);
 		done.setEnabled(false);
