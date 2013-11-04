@@ -56,7 +56,8 @@ exports.tasksToRows = function(tasks) {
 	var tasks_rows = new Array();
 	for (var i = 0; i < tasks.length; i++) {
 		next_task = Ti.UI.createTableViewRow(tasks[i]);
-		next_task.setTitle(tasks[i].description);
+		Ti.API.info('task is '+next_task.id);
+		next_task.setTitle(tasks[i].description+'\t'+tasks[i].start+' to '+tasks[i].end);
 		tasks_rows[i] = next_task;
 	}
 	return tasks_rows;

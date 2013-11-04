@@ -30,39 +30,44 @@ function TasksWindow(containingTab) {
 		var add_task = new TaskView(task);
 		add_task.open();
 	};
-	
-	self.setButtons = function(new_date){
+
+	self.setButtons = function(new_date) {
 		var enable_status = (db.daycount(new_date) > 0);
 		edit.setEnabled(enable_status);
 		del.setEnabled(enable_status);
 		done.setEnabled(false);
 	};
 
-	self.addEventListener('swipe', function(e) {
+	var swipeEvent = function(e) {
 		// if done is enabled then we are in edit or delete mode and should not allow swiping
-		if (!done.enabled) {
-			
-			// if swipe left then increment the date
-			if (e.direction == 'left') {
-				focus_date = new Date(focus_date.setDate(focus_date.getDate() + 1));
 
-				// increment date
-				Ti.App.Properties.setObject('focus_date', focus_date);
+		// if swipe left then increment the date
+		if (e.direction == 'left') {
+			focus_date = new Date(focus_date.setDate(focus_date.getDate() + 1));
 
-			}// if swipe right then decrement date
-			else if (e.direction == 'right') {
-				focus_date = new Date(focus_date.setDate(focus_date.getDate() - 1));
+			// increment date
+			Ti.App.Properties.setObject('focus_date', focus_date);
 
-				// decrement date
-				Ti.App.Properties.setObject('focus_date', focus_date);
-			}
+		}// if swipe right then decrement date
+		else if (e.direction == 'right') {
+			focus_date = new Date(focus_date.setDate(focus_date.getDate() - 1));
 
-			/*
-			 * Update information, this will change nothing if the swipe wasn't left or right
-			 */
-			self.setDay(focus_date);
+			// decrement date
+			Ti.App.Properties.setObject('focus_date', focus_date);
 		}
-	});
+
+		/*
+		 * Update information, this will change nothing if the swipe wasn't left or right
+		 */
+		self.setDay(focus_date);
+		self.setButtons(focus_date);
+	};
+	
+	var bogusSwipeEvent = function(e){
+		// do nothing
+	};
+
+	self.addEventListener('swipe', swipeEvent);
 
 	/*
 	 * the table view that will hold the tasks
@@ -77,11 +82,12 @@ function TasksWindow(containingTab) {
 		moveable : true,
 		//editable : true
 	});
-	
+
 	var watchTasksForClicks = function(watch) {
 		function clickEvent(e) {
 			openTask(e.row);
-		} 
+		}
+
 		if (watch) {
 			tasks_table.addEventListener('click', clickEvent);
 		} else {
@@ -91,7 +97,7 @@ function TasksWindow(containingTab) {
 	};
 
 	watchTasksForClicks(true);
-	
+
 	Ti.App.addEventListener('databaseUpdated', function(e) {
 		Ti.API.info('database updated');
 		updated_tasks = util.tasksToRows(db.daylist(focus_date));
@@ -117,7 +123,10 @@ function TasksWindow(containingTab) {
 		systemButton : Titanium.UI.iPhone.SystemButton.ADD
 	});
 	add.addEventListener('click', function(e) {
-		openTask({start: focus_date, end: focus_date});
+		openTask({
+			start : focus_date,
+			end : focus_date
+		});
 	});
 
 	// construct list of ids, this is changed by a couple event listeners
@@ -138,6 +147,7 @@ function TasksWindow(containingTab) {
 		done.setEnabled(true);
 		del.setEnabled(false);
 		watchTasksForClicks(false);
+		self.removeEventListener('swipe', swipeEvent);
 
 		task_ids = tasks_list.map(function(task) {
 			return task.id;
@@ -156,6 +166,7 @@ function TasksWindow(containingTab) {
 		edit.setEnabled(false);
 		done.setEnabled(true);
 		watchTasksForClicks(false);
+		self.removeEventListener('swipe', swipeEvent);
 
 		tasks_table.setEditable(true);
 	});
@@ -180,17 +191,20 @@ function TasksWindow(containingTab) {
 		tasks_table.addEventListener('delete', function(e) {
 			db.del(e.rowData.id);
 		});
-		
+
 		// tasks can be 'opened'
 		watchTasksForClicks(true);
 
 		// use reorder() to save the order of possibly user adjusted tasks
-		ids_from_tasks = tasks_table.getData().map(function(task){
-			Ti.API.info(task.rowData.id);
-			return task.rowData.id;
+		ids_from_tasks = tasks_table.getData().map(function(task) {
+			Ti.API.info(task);
+			return task.id;
 		});
 
-		db.reorder(task_ids);
+		db.reorder(ids_from_tasks);
+		
+		// reset swipe event listener
+		self.addEventListener('swipe', swipeEvent(e));
 	});
 
 	// set the toolbar for our window using the above buttons
