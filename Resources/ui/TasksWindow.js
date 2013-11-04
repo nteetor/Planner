@@ -185,6 +185,10 @@ function TasksWindow(containingTab) {
 		watchTasksForClicks(true);
 
 		// use reorder() to save the order of possibly user adjusted tasks
+		ids_from_tasks = tasks_table.getData().map(function(task){
+			Ti.API.info(task.rowData.id);
+			return task.rowData.id;
+		});
 		db.reorder(task_ids);
 	});
 
