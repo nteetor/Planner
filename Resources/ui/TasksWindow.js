@@ -8,13 +8,13 @@ function TasksWindow(containingTab) {
 		backgroundColor : 'white',
 		layout : 'vertical'
 	});
-	
+
 	var focus_date = new Date(Ti.App.Properties.getObject('focus_date'));
 	Ti.App.Properties.addEventListener('change', function() {
 		focus_date = new Date(Ti.App.Properties.getObject('focus_date'));
 		self.setDay(focus_date);
 	});
-	
+
 	var self_title = Ti.UI.createLabel({
 		text : util.prettyDate(focus_date),
 		top : 5,
@@ -25,46 +25,44 @@ function TasksWindow(containingTab) {
 		self_title.setText(util.prettyDate(new_date));
 		tasks_table.setData(util.tasksToRows(db.daylist(new_date)));
 	};
-	
-	self.setButtons = function(new_date){
+
+	self.setButtons = function(new_date) {
 		var enable_status = (db.daycount(new_date) > 0);
 		edit.setEnabled(enable_status);
 		del.setEnabled(enable_status);
-		done.setEnabled(false); 
+		done.setEnabled(false);
 	};
 
 	self.addEventListener('swipe', function(e) {
-
-		// if swipe left then increment the date
-		if (e.direction == 'left') {
-			focus_date = new Date(focus_date.setDate(focus_date.getDate() + 1));
-
-			// increment date
-			Ti.App.Properties.setObject('focus_date', focus_date);
-
-		}// if swipe right then decrement date
-		else if (e.direction == 'right') {
-			focus_date = new Date(focus_date.setDate(focus_date.getDate() - 1));
+		// if done is enabled then we are in edit or delete mode and should not allow swiping
+		if (!done.enabled) {
 			
-			// decrement date
-			Ti.App.Properties.setObject('focus_date', focus_date);
-		}
+			// if swipe left then increment the date
+			if (e.direction == 'left') {
+				focus_date = new Date(focus_date.setDate(focus_date.getDate() + 1));
 
-		/*
-		 * Update information, this will change nothing if the swipe wasn't left or right
-		 */
-		self.setDay(focus_date);
+				// increment date
+				Ti.App.Properties.setObject('focus_date', focus_date);
+
+			}// if swipe right then decrement date
+			else if (e.direction == 'right') {
+				focus_date = new Date(focus_date.setDate(focus_date.getDate() - 1));
+
+				// decrement date
+				Ti.App.Properties.setObject('focus_date', focus_date);
+			}
+
+			/*
+			 * Update information, this will change nothing if the swipe wasn't left or right
+			 */
+			self.setDay(focus_date);
+		}
 	});
 
 	/*
 	 * the table view that will hold the tasks
 	 */
 	tasks_list = db.daylist(focus_date);
-	
-	// construct list of ids, this is changed by a couple event listeners
-	task_ids = tasks_list.map(function(task) {
-		return task.id;
-	});
 
 	// TABLE OF TASKS (for a particular day)
 	var tasks_table = Ti.UI.createTableView({
@@ -99,8 +97,19 @@ function TasksWindow(containingTab) {
 		systemButton : Titanium.UI.iPhone.SystemButton.ADD
 	});
 	add.addEventListener('click', function(e) {
-		var add_task = new TaskView({start: focus_date, end: focus_date});
+		var add_task = new TaskView({
+			start : focus_date,
+			end : focus_date
+		});
 		add_task.open();
+	});
+
+	// construct list of ids, this is changed by a couple event listeners
+	task_ids = tasks_list.map(function(task) {
+		return task.id;
+	});
+	tasks_table.addEventListener('move', function(e) {
+		task_ids.move(e.index, 0);
 	});
 
 	// EDIT button
@@ -113,10 +122,9 @@ function TasksWindow(containingTab) {
 		done.setEnabled(true);
 		del.setEnabled(false);
 
-		// make it so tasks can be rearranged.
-		// TODO: we need to change the sort value so the order is preserved.
-		// HOWEVER, db.reorder() will do this for us, thanks Salter ... we'll have to remove these comments
-		// the saving of the order will take place in the 'done' event listener, sorry this is such a long comment
+		task_ids = tasks_list.map(function(task) {
+			return task.id;
+		});
 
 		tasks_table.setMoving(true);
 	});
