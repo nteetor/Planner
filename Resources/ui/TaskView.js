@@ -13,8 +13,11 @@ var TimePickerWindow = require('ui/timePickerWindow');
  * CURRENTLY ONLY ADDS NEW TASKS (instead of both editing and adding)
  */
 function TaskView(task) {
+	task.start = new Date(task.start);
+	task.end = new Date(task.end);
+	
 	var self = Ti.UI.createWindow({
-		title : L('add_task'),
+		title : task.id ? L('edit_task') : L('add_task'),
 		backgroundColor : 'white',
 		navBarHidden : true
 	});
@@ -26,7 +29,7 @@ function TaskView(task) {
 	 * Add task title label
 	 */
 	var tasks_label = Ti.UI.createLabel({
-		text : L('add_task'),
+		text : task.id ? L('edit_task') : L('add_task'),
 		top : 40,
 		font : {
 			fontSize : 24
@@ -47,10 +50,16 @@ function TaskView(task) {
 			'end' : task.end,
 			'description' : description_field.value
 		});
-		Ti.API.info('new_task.start value is ' + new_task.start);
 		
-		// I'm not entirely sure what the sort argument should be
-		db.add(new_task, db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))).length);
+
+		if (task.id) {
+			new_task.id = task.id;
+			db.update(new_task);
+		} else {
+			// TODO: I'm not entirely sure what the sort argument should be
+			db.add(new_task, db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))).length);	
+		}
+		
 		self.close();
 	});
 
@@ -62,6 +71,8 @@ function TaskView(task) {
 		self.close();
 	});
 
+
+	// TODO: what is this??
 	var fixedSpace = Ti.UI.createButton({
 		width : 10,
 		systemButton : Ti.UI.iPhone.SystemButton.FIXED_SPACE
@@ -82,7 +93,7 @@ function TaskView(task) {
 	var LABEL_HEIGHT = 50;
 	var FIELD_LEFT_POS = LABEL_WIDTH + 20;
 
-	var row1 = Ti.UI.createTableViewRow({
+	var descriptionRow = Ti.UI.createTableViewRow({
 		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
 	});
 
@@ -100,10 +111,15 @@ function TaskView(task) {
 	var description_field = Ti.UI.createTextField({
 		left : FIELD_LEFT_POS,
 		right : 10,
+		value: task.title ? task.title : ''
+	});
+	
+	descriptionRow.addEventListener('click', function() {
+		
 	});
 
-	row1.add(description_label);
-	row1.add(description_field);
+	descriptionRow.add(description_label);
+	descriptionRow.add(description_field);
 
 	var startLabel = Ti.UI.createLabel({
 		text : L('start_time'),
@@ -116,6 +132,7 @@ function TaskView(task) {
 		}
 	});
 	
+	Ti.API.info(task.start);
 	var startValue = Ti.UI.createLabel({
 		text : task.start.toTimeString(),
 		left : FIELD_LEFT_POS,
