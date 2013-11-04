@@ -26,7 +26,12 @@ function TasksWindow(containingTab) {
 		tasks_table.setData(util.tasksToRows(db.daylist(new_date)));
 	};
 
-	self.setButtons = function(new_date) {
+	var openTask = function(task) {
+		var add_task = new TaskView(task);
+		add_task.open();
+	};
+	
+	self.setButtons = function(new_date){
 		var enable_status = (db.daycount(new_date) > 0);
 		edit.setEnabled(enable_status);
 		del.setEnabled(enable_status);
@@ -72,13 +77,28 @@ function TasksWindow(containingTab) {
 		moveable : true,
 		//editable : true
 	});
+	
+	var watchTasksForClicks = function(watch) {
+		function clickEvent(e) {
+			openTask(e.row);
+		} 
+		if (watch) {
+			tasks_table.addEventListener('click', clickEvent);
+		} else {
+			tasks_table.removeEventListener('click', clickEvent);
+		}
 
+	};
+
+	watchTasksForClicks(true);
+	
 	Ti.App.addEventListener('databaseUpdated', function(e) {
 		Ti.API.info('database updated');
 		updated_tasks = util.tasksToRows(db.daylist(focus_date));
 
 		tasks_table.setData(updated_tasks);
 		tasks_table.setScrollable(updated_tasks.length > 8);
+		watchTasksForClicks(true);
 
 		// on database update we need to enable/disable buttons
 		enable_status = (updated_tasks.length > 0);
@@ -97,11 +117,7 @@ function TasksWindow(containingTab) {
 		systemButton : Titanium.UI.iPhone.SystemButton.ADD
 	});
 	add.addEventListener('click', function(e) {
-		var add_task = new TaskView({
-			start : focus_date,
-			end : focus_date
-		});
-		add_task.open();
+		openTask({start: focus_date, end: focus_date});
 	});
 
 	// construct list of ids, this is changed by a couple event listeners
@@ -121,6 +137,7 @@ function TasksWindow(containingTab) {
 	edit.addEventListener('click', function(e) {
 		done.setEnabled(true);
 		del.setEnabled(false);
+		watchTasksForClicks(false);
 
 		task_ids = tasks_list.map(function(task) {
 			return task.id;
@@ -138,6 +155,7 @@ function TasksWindow(containingTab) {
 	del.addEventListener('click', function(e) {
 		edit.setEnabled(false);
 		done.setEnabled(true);
+		watchTasksForClicks(false);
 
 		tasks_table.setEditable(true);
 	});
@@ -162,6 +180,9 @@ function TasksWindow(containingTab) {
 		tasks_table.addEventListener('delete', function(e) {
 			db.del(e.rowData.id);
 		});
+		
+		// tasks can be 'opened'
+		watchTasksForClicks(true);
 
 		// use reorder() to save the order of possibly user adjusted tasks
 		db.reorder(task_ids);
