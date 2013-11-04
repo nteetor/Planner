@@ -48,7 +48,7 @@ function TaskView(task) {
 		var new_task = new Todo({
 			'start' : task.start,
 			'end' : task.end,
-			'description' : description_field.value
+			'description' : descriptionContent.text
 		});
 		
 
@@ -90,8 +90,9 @@ function TaskView(task) {
 	*/
 	// some constants because I got sick of chaning variables
 	var LABEL_WIDTH = 130;
-	var LABEL_HEIGHT = 50;
-	var FIELD_LEFT_POS = LABEL_WIDTH + 20;
+	var FIELD_WIDTH = 200;
+	var ROW_HEIGHT = 50;
+	var FIELD_LEFT = LABEL_WIDTH + 20;
 
 	var descriptionRow = Ti.UI.createTableViewRow({
 		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
@@ -101,31 +102,56 @@ function TaskView(task) {
 		text : L('description'),
 		left : 10,
 		width : LABEL_WIDTH,
-		height : LABEL_HEIGHT,
+		height : ROW_HEIGHT,
 		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
 		font : {
 			fontSize : 24
 		}
 	});
 
-	var description_field = Ti.UI.createTextField({
-		left : FIELD_LEFT_POS,
-		right : 10,
-		value: task.title ? task.title : ''
+	var descriptionContent = Ti.UI.createLabel({
+		left : FIELD_LEFT,
+		width: FIELD_WIDTH,
+		height : ROW_HEIGHT,
+		text: task.title ? task.title : ''
 	});
 	
 	descriptionRow.addEventListener('click', function() {
+		var textWin = Ti.UI.createWindow({
+			navBarHidden : true,
+			backgroundColor: 'black'
+		});
+		var textArea = Ti.UI.createTextArea({
+			value: descriptionContent.text,
+			height: 150,
+			width: 300,
+			top: 50
+		});
+		var done = Ti.UI.createButton({
+			text: L('ok'),
+			top: 10,
+			width: 80,
+			height: 30
+		});
+	
+		done.addEventListener('click', function(e) {
+			descriptionContent.text = textArea.value;
+			textWin.close();
+		});
 		
+		textWin.add(textArea);
+		textWin.add(done);
+		textWin.open();
 	});
 
 	descriptionRow.add(description_label);
-	descriptionRow.add(description_field);
+	descriptionRow.add(descriptionContent);
 
 	var startLabel = Ti.UI.createLabel({
 		text : L('start_time'),
 		left : 10,
 		width : LABEL_WIDTH,
-		height : LABEL_HEIGHT,
+		height : ROW_HEIGHT,
 		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
 		font : {
 			fontSize : 24
@@ -135,7 +161,9 @@ function TaskView(task) {
 	Ti.API.info(task.start);
 	var startValue = Ti.UI.createLabel({
 		text : task.start.toTimeString(),
-		left : FIELD_LEFT_POS,
+		left : FIELD_LEFT,
+		width: FIELD_WIDTH,
+		height : ROW_HEIGHT,
 		right: 10,
 		font : {
 			fontSize : 24
@@ -163,7 +191,7 @@ function TaskView(task) {
 		text : L('end_time'),
 		left : 10,
 		width : LABEL_WIDTH,
-		height : LABEL_HEIGHT,
+		height : ROW_HEIGHT,
 		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
 		font : {
 			fontSize : 24
@@ -172,7 +200,9 @@ function TaskView(task) {
 
 	var endValue = Ti.UI.createLabel({
 		text : task.end.toTimeString(),
-		left : FIELD_LEFT_POS,
+		left : FIELD_LEFT,
+		width: FIELD_WIDTH,
+		height : ROW_HEIGHT,
 		right: 10,
 		font : {
 			fontSize : 24
@@ -196,7 +226,7 @@ function TaskView(task) {
 	endRow.add(endLabel);
 	endRow.add(endValue);
 
-	var data = [row1, startRow, endRow];
+	var data = [descriptionRow, startRow, endRow];
 
 	// using a table we can achieve the label text-area look we want for this page
 	var fields_table = Ti.UI.createTableView({

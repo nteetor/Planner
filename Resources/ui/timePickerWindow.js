@@ -15,8 +15,10 @@ function TimePickerWindow(time, setTime) {
 	});
 	
 	var done = Ti.UI.createButton({
+		text: L('ok'),
 		bottom: 50,
-		text: L('ok')
+		width: 80,
+		height: 30
 	});
 	
 	done.addEventListener('click', function(e) {
