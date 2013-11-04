@@ -189,6 +189,7 @@ function TasksWindow(containingTab) {
 			Ti.API.info(task.rowData.id);
 			return task.rowData.id;
 		});
+
 		db.reorder(task_ids);
 	});
 
