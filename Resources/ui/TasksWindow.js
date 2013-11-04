@@ -185,6 +185,9 @@ function TasksWindow(containingTab) {
 		watchTasksForClicks(true);
 
 		// use reorder() to save the order of possibly user adjusted tasks
+		// TODO: I got an error when clicking edit and then done:
+		// SQLite error binding unknown parameter type 'KrollCallback'. Value: '<KrollCallback: 0xa82ddb0>
+		// weird.
 		db.reorder(task_ids);
 	});
 

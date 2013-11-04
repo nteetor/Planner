@@ -65,23 +65,22 @@ function TaskView(task) {
 
 	// CANCEL BUTTON
 	var cancel = Ti.UI.createButton({
-		title : L('cancel'),
+		title : L('cancel')
 	});
 	cancel.addEventListener('click', function(e) {
 		self.close();
 	});
 
 
-	// TODO: what is this??
 	var fixedSpace = Ti.UI.createButton({
 		width : 10,
 		systemButton : Ti.UI.iPhone.SystemButton.FIXED_SPACE
 	});
 
 	var button_bar = Titanium.UI.iOS.createToolbar({
-		items : [fixedSpace, ok, util.flexSpace, cancel, fixedSpace],
+		items : [fixedSpace, cancel, util.flexSpace, ok, fixedSpace],
 		bottom : 10,
-		barColor : 'white'
+		barColor : '#AAAAAA'
 	});
 
 	/*
@@ -125,23 +124,32 @@ function TaskView(task) {
 			value: descriptionContent.text,
 			height: 150,
 			width: 300,
-			top: 50
+			top: 50,
+			returnKeyType: Ti.UI.RETURNKEY_DONE
 		});
-		var done = Ti.UI.createButton({
-			text: L('ok'),
+		
+		var cancelButton = Ti.UI.createButton({
+			text: L('cancel'),
 			top: 10,
-			width: 80,
-			height: 30
+			height: 30,
+			width: 60,
+			color: 'black',
+			backgroundColor: 'white'
 		});
-	
-		done.addEventListener('click', function(e) {
+		
+		cancelButton.addEventListener('click', function() {
+			textWin.close();
+		});
+		
+		textArea.addEventListener('blur', function() {
 			descriptionContent.text = textArea.value;
 			textWin.close();
 		});
 		
 		textWin.add(textArea);
-		textWin.add(done);
+		textWin.add(cancelButton);
 		textWin.open();
+		textArea.focus();
 	});
 
 	descriptionRow.add(description_label);
