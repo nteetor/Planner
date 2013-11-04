@@ -88,9 +88,11 @@ function TaskView(task) {
 	* also event listeners
 	*/
 	// some constants because I got sick of chaning variables
-	var LABEL_WIDTH = 130;
-	var FIELD_WIDTH = 200;
-	var ROW_HEIGHT = 50;
+	var LABEL_WIDTH = 110;
+	var FIELD_WIDTH = 160;
+	var LABELFONTSIZE = 18;
+	var VALUEFONTSIZE = 18;
+	var ROW_HEIGHT = 40;
 	var FIELD_LEFT = LABEL_WIDTH + 20;
 
 	var descriptionRow = Ti.UI.createTableViewRow({
@@ -104,7 +106,7 @@ function TaskView(task) {
 		height : ROW_HEIGHT,
 		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
 		font : {
-			fontSize : 24
+			fontSize : LABELFONTSIZE
 		}
 	});
 
@@ -112,7 +114,10 @@ function TaskView(task) {
 		left : FIELD_LEFT,
 		width: FIELD_WIDTH,
 		height : ROW_HEIGHT,
-		text: task.title ? task.title : ''
+		text: task.title ? task.title : '',
+		font: {
+			fontSize : VALUEFONTSIZE
+		}
 	});
 	
 	descriptionRow.addEventListener('click', function() {
@@ -162,19 +167,19 @@ function TaskView(task) {
 		height : ROW_HEIGHT,
 		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
 		font : {
-			fontSize : 24
+			fontSize : LABELFONTSIZE
 		}
 	});
 	
 	Ti.API.info(task.start);
 	var startValue = Ti.UI.createLabel({
-		text : task.start.toTimeString(),
+		text : task.start.getHours() + ':' + task.start.getMinutes(),
 		left : FIELD_LEFT,
 		width: FIELD_WIDTH,
 		height : ROW_HEIGHT,
 		right: 10,
 		font : {
-			fontSize : 24
+			fontSize : VALUEFONTSIZE
 		}
 	});
 
@@ -202,18 +207,18 @@ function TaskView(task) {
 		height : ROW_HEIGHT,
 		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
 		font : {
-			fontSize : 24
+			fontSize : LABELFONTSIZE
 		}
 	});
 
 	var endValue = Ti.UI.createLabel({
-		text : task.end.toTimeString(),
+		text : task.start.getHours() + ':' + task.start.getMinutes(),
 		left : FIELD_LEFT,
 		width: FIELD_WIDTH,
 		height : ROW_HEIGHT,
 		right: 10,
 		font : {
-			fontSize : 24
+			fontSize : VALUEFONTSIZE
 		}
 	});
 
