@@ -1,5 +1,7 @@
 var CalendarView = require('ui/CalendarView');
-
+/*
+ * Create a window to hold the calendar
+ */
 function CalendarWindow(openTaskDayFunction){
 	var self = Ti.UI.createWindow({
 		title : L('calendar'),
