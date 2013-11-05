@@ -95,6 +95,7 @@ exports.tasksToRows = function(tasks) {
 		});
 		next_task.add(descriptionLabel);
 		next_task.add(timesLabel);
+		next_task.descriptionForTaskView = tasks[i].description;
 		tasks_rows[i] = next_task;
 	}
 	return tasks_rows;

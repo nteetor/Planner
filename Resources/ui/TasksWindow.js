@@ -27,8 +27,6 @@ function TasksWindow(containingTab) {
 	};
 
 	var openTask = function(task) {
-		Ti.API.info('task in openTask is '+task);
-		Ti.API.info('task description is '+JSON.stringify(task.description));
 		var add_task = new TaskView(task);
 		add_task.open();
 	};
@@ -84,7 +82,6 @@ function TasksWindow(containingTab) {
 
 	var watchTasksForClicks = function(watch) {
 		function clickEvent(e) {
-			Ti.API.info(JSON.stringify(e));
 			openTask(e.rowData);
 		}
 
