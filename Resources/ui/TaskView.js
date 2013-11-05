@@ -135,12 +135,13 @@ function TaskView(task) {
 		});
 
 		var cancelButton = Ti.UI.createButton({
-			text : L('cancel'),
+			title : L('cancel'),
 			top : 10,
 			height : 30,
-			width : 60,
+			width : 80,
 			color : 'black',
-			backgroundColor : 'white'
+			backgroundColor : 'white',
+			textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER
 		});
 
 		cancelButton.addEventListener('click', function() {

@@ -28,7 +28,7 @@ function TasksWindow(containingTab) {
 
 	var openTask = function(task) {
 		var add_task = new TaskView(task);
-		add_task.open();
+		add_task.open({modal:true});
 	};
 
 	self.setButtons = function(new_date) {

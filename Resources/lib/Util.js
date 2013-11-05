@@ -53,7 +53,7 @@ exports.prettyDate = function(date) {
 };
 
 
-exports.jacksInferiorPrettyTime = function(date) {
+exports.jacksNowSuperiorPrettyTime = function(date) {
 	var hours = date.getHours(),
 		minutes = date.getMinutes();
 	var trailer = 'AM';
@@ -63,6 +63,9 @@ exports.jacksInferiorPrettyTime = function(date) {
 	}
 	if (hours == 0) {
 		hours = 12;
+	}
+	if (minutes < 10){
+		minutes = '0'+minutes;
 	}
 	return hours + ':' + minutes + ' ' + trailer;  
 };
