@@ -15,13 +15,12 @@ var TimePickerWindow = require('ui/timePickerWindow');
 function TaskView(task) {
 	task.start = new Date(task.start);
 	task.end = new Date(task.end);
-	
+
 	var self = Ti.UI.createWindow({
 		title : task.id ? L('edit_task') : L('add_task'),
 		backgroundColor : 'white',
 		navBarHidden : true
 	});
-	
 
 	self.setLeftNavButton(Ti.UI.createView({}));
 
@@ -45,22 +44,25 @@ function TaskView(task) {
 		title : L('ok'),
 	});
 	ok.addEventListener('click', function(e) {
-		var new_task = new Todo({
-			'start' : task.start,
-			'end' : task.end,
-			'description' : descriptionContent.text
-		});
-		
-
-		if (task.id) {
-			new_task.id = task.id;
-			db.update(new_task);
+		if (task.start > task.end) {
+			alert('End time comes before start time');
 		} else {
-			// TODO: I'm not entirely sure what the sort argument should be
-			db.add(new_task, db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))).length);	
+			var new_task = new Todo({
+				'start' : task.start,
+				'end' : task.end,
+				'description' : descriptionContent.text
+			});
+
+			if (task.id) {
+				new_task.id = task.id;
+				db.update(new_task);
+			} else {
+				// TODO: I'm not entirely sure what the sort argument should be
+				db.add(new_task, db.daylist(new Date(Ti.App.Properties.getObject('focus_date'))).length);
+			}
+
+			self.close();
 		}
-		
-		self.close();
 	});
 
 	// CANCEL BUTTON
@@ -70,7 +72,6 @@ function TaskView(task) {
 	cancel.addEventListener('click', function(e) {
 		self.close();
 	});
-
 
 	var fixedSpace = Ti.UI.createButton({
 		width : 10,
@@ -112,45 +113,45 @@ function TaskView(task) {
 
 	var descriptionContent = Ti.UI.createLabel({
 		left : FIELD_LEFT,
-		width: FIELD_WIDTH,
+		width : FIELD_WIDTH,
 		height : ROW_HEIGHT,
-		text: task.title ? task.title : '',
-		font: {
+		text : task.title ? task.title : '',
+		font : {
 			fontSize : VALUEFONTSIZE
 		}
 	});
-	
+
 	descriptionRow.addEventListener('click', function() {
 		var textWin = Ti.UI.createWindow({
 			navBarHidden : true,
-			backgroundColor: 'black'
+			backgroundColor : 'black'
 		});
 		var textArea = Ti.UI.createTextArea({
-			value: descriptionContent.text,
-			height: 150,
-			width: 300,
-			top: 50,
-			returnKeyType: Ti.UI.RETURNKEY_DONE
+			value : descriptionContent.text,
+			height : 150,
+			width : 300,
+			top : 50,
+			returnKeyType : Ti.UI.RETURNKEY_DONE
 		});
-		
+
 		var cancelButton = Ti.UI.createButton({
-			text: L('cancel'),
-			top: 10,
-			height: 30,
-			width: 60,
-			color: 'black',
-			backgroundColor: 'white'
+			text : L('cancel'),
+			top : 10,
+			height : 30,
+			width : 60,
+			color : 'black',
+			backgroundColor : 'white'
 		});
-		
+
 		cancelButton.addEventListener('click', function() {
 			textWin.close();
 		});
-		
+
 		textArea.addEventListener('blur', function() {
 			descriptionContent.text = textArea.value;
 			textWin.close();
 		});
-		
+
 		textWin.add(textArea);
 		textWin.add(cancelButton);
 		textWin.open();
@@ -170,14 +171,14 @@ function TaskView(task) {
 			fontSize : LABELFONTSIZE
 		}
 	});
-	
-	Ti.API.info(task.start);
+
+	//Ti.API.info(task.start);
 	var startValue = Ti.UI.createLabel({
 		text : task.start.getHours() + ':' + task.start.getMinutes(),
 		left : FIELD_LEFT,
-		width: FIELD_WIDTH,
+		width : FIELD_WIDTH,
 		height : ROW_HEIGHT,
-		right: 10,
+		right : 10,
 		font : {
 			fontSize : VALUEFONTSIZE
 		}
@@ -189,7 +190,7 @@ function TaskView(task) {
 
 	startRow.add(startLabel);
 	startRow.add(startValue);
-	
+
 	startRow.addEventListener('click', function() {
 		var timePicker = new TimePickerWindow(task.start, function(time) {
 			task.start = time;
@@ -214,9 +215,9 @@ function TaskView(task) {
 	var endValue = Ti.UI.createLabel({
 		text : task.start.getHours() + ':' + task.start.getMinutes(),
 		left : FIELD_LEFT,
-		width: FIELD_WIDTH,
+		width : FIELD_WIDTH,
 		height : ROW_HEIGHT,
-		right: 10,
+		right : 10,
 		font : {
 			fontSize : VALUEFONTSIZE
 		}
@@ -225,7 +226,7 @@ function TaskView(task) {
 	var endRow = Ti.UI.createTableViewRow({
 		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
 	});
-	
+
 	endRow.addEventListener('click', function() {
 		var timePicker = new TimePickerWindow(task.end, function(time) {
 			task.end = time;
@@ -259,5 +260,5 @@ function TaskView(task) {
 
 module.exports = TaskView;
 
-// The thoughts of sciencetists are more important than the blood of martys
+// The thoughts of scientists are more important than the blood of martys
 // awesomeness

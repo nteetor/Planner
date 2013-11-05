@@ -55,7 +55,6 @@ exports.daycount = function(_date) {
 // todo is a JS object containing description, start, and end properties
 
 exports.add = function(todo, sort) {
-	Ti.API.info('within add() todo.start ');
 	var db = Ti.Database.open('Todos');
 	db.execute("INSERT INTO todos(date, desc, start, end, sort) VALUES(?,?,?,?,?)", toDateValue(todo.start), todo.description, todo.start.valueOf(), todo.end.valueOf(), sort);
 	var n = db.lastInsertRowId;
@@ -89,9 +88,9 @@ exports.update = function(todo) {
 
 exports.reorder = function(ids) {
 	var db = Ti.Database.open('Todos');
-	for (var key in ids) {
-		id = ids[key];
-		db.execute('UPDATE todos SET sort=? WHERE id = ?', key, id);
+	for (var i = 0; i < ids.length; i++) {
+		id = ids[i];
+		db.execute('UPDATE todos SET sort=? WHERE id=?', i, id);
 	}
 	db.close();
 	Ti.App.fireEvent("databaseUpdated");

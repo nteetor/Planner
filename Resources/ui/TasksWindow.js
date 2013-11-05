@@ -62,8 +62,8 @@ function TasksWindow(containingTab) {
 		self.setDay(focus_date);
 		self.setButtons(focus_date);
 	};
-	
-	var bogusSwipeEvent = function(e){
+
+	var bogusSwipeEvent = function(e) {
 		// do nothing
 	};
 
@@ -99,7 +99,6 @@ function TasksWindow(containingTab) {
 	watchTasksForClicks(true);
 
 	Ti.App.addEventListener('databaseUpdated', function(e) {
-		Ti.API.info('database updated');
 		updated_tasks = util.tasksToRows(db.daylist(focus_date));
 
 		tasks_table.setData(updated_tasks);
@@ -127,14 +126,6 @@ function TasksWindow(containingTab) {
 			start : focus_date,
 			end : focus_date
 		});
-	});
-
-	// construct list of ids, this is changed by a couple event listeners
-	task_ids = tasks_list.map(function(task) {
-		return task.id;
-	});
-	tasks_table.addEventListener('move', function(e) {
-		task_ids.move(e.index, 0);
 	});
 
 	// EDIT button
@@ -196,15 +187,19 @@ function TasksWindow(containingTab) {
 		watchTasksForClicks(true);
 
 		// use reorder() to save the order of possibly user adjusted tasks
-		ids_from_tasks = tasks_table.getData().map(function(task) {
-			Ti.API.info(task);
-			return task.id;
-		});
-
-		db.reorder(ids_from_tasks);
+		var reorderedTaskList = tasks_table.data[0];
+		var taskIDList = new Array();
+		//Ti.API.info('newTaskOrder number of rows is/are '+reorderedTaskList.rowCount+'\n value is '+reorderedTaskList);
+		for (var i=0; i<reorderedTaskList.rowCount; i++) {
+			var row = reorderedTaskList.rows[i];
+			taskIDList.push(row.id);
+			//Ti.API.info('task '+row+' with id '+row.id);
+			//Ti.API.info('task '+row+' has sort #'+row.sort);
+		}
+		db.reorder(taskIDList);
 		
 		// reset swipe event listener
-		self.addEventListener('swipe', swipeEvent(e));
+		self.addEventListener('swipe', swipeEvent);
 	});
 
 	// set the toolbar for our window using the above buttons

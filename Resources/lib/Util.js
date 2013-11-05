@@ -34,30 +34,30 @@ var dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 var monthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 /**
- * Converts a Date object to a pretty string version
- *
- * @param {Object} date a number representation of a date or Date object
- * @return this function returns a "pretty" version of a Date object
+ * Returns time in form XX:XX XM eg 1:45 AM
  */
+var prettyTime = function(date){
+	date = new Date(date);
+	var xm = (date.getHours() >= 12) ? "PM" : "AM";
+	var newHour = date.getHours()%12;
+	var newMin = (date.getMinutes() < 10) ? "0"+date.getMinutes() : date.getMinutes();
+	return newHour+":"+newMin+" "+xm;
+};
+exports.prettyTime = prettyTime;
+
 exports.prettyDate = function(date) {
 	date = new Date(date);
 	return dayOfWeek[date.getDay()] + ', ' + monthName[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
 };
 
-/**
- * Given an array of tasks this function converts the tasks into TableViewRow
- * objects so that extra parameters are preserved, the array of row
- * objects is returned.
- *
- * @param {Object} tasks is an array of task objects retrieved from the database
- * @return this function returns an array of TableViewRow objects
- */
 exports.tasksToRows = function(tasks) {
 	var tasks_rows = new Array();
 	for (var i = 0; i < tasks.length; i++) {
 		next_task = Ti.UI.createTableViewRow(tasks[i]);
-		Ti.API.info('task is '+next_task.id);
-		next_task.setTitle(tasks[i].description+'\t'+tasks[i].start+' to '+tasks[i].end);
+		next_task.setFont({
+			fontSize : 14
+		});
+		next_task.setTitle(tasks[i].description+'\t'+prettyTime(tasks[i].start)+' to '+prettyTime(tasks[i].end));
 		tasks_rows[i] = next_task;
 	}
 	return tasks_rows;
