@@ -15,6 +15,8 @@ var TimePickerWindow = require('ui/timePickerWindow');
 function TaskView(task) {
 	task.start = new Date(task.start);
 	task.end = new Date(task.end);
+	Ti.API.info('task desc is '+db.getDesc(task.id));
+	task.description = db.getDesc(task.id);
 
 	var self = Ti.UI.createWindow({
 		title : task.id ? L('edit_task') : L('add_task'),
@@ -47,6 +49,7 @@ function TaskView(task) {
 		if (task.start > task.end) {
 			alert('End time comes before start time');
 		} else {
+			Ti.API.info('line 50 in TaskView.js, description is '+task.description);
 			var new_task = new Todo({
 				'start' : task.start,
 				'end' : task.end,
@@ -115,7 +118,7 @@ function TaskView(task) {
 		left : FIELD_LEFT,
 		width : FIELD_WIDTH,
 		height : 30,
-		text : task.description,
+		text : db.getDesc(task.id),
 		font : {
 			fontSize : VALUEFONTSIZE
 		}

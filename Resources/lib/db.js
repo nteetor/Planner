@@ -97,6 +97,17 @@ exports.reorder = function(ids) {
 	Ti.App.fireEvent("databaseUpdated");
 };
 
+exports.getDesc = function(id){
+	var db = Ti.Database.open('Todos');
+	var result = db.execute('SELECT * FROM todos WHERE id=?',id);
+	var desc = '';
+	if (result.isValidRow()){
+		desc = result.fieldByName('desc');
+	}
+	db.close();
+	return desc;
+};
+
 // help function to translate a JS date to a unique integer
 
 function toDateValue(date) {
