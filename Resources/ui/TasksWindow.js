@@ -28,7 +28,7 @@ function TasksWindow(containingTab) {
 
 	var openTask = function(task) {
 		var add_task = new TaskView(task);
-		add_task.open({modal:true});
+		add_task.open();
 	};
 
 	self.setButtons = function(new_date) {
@@ -100,7 +100,6 @@ function TasksWindow(containingTab) {
 
 		tasks_table.setData(updated_tasks);
 		tasks_table.setScrollable(updated_tasks.length > 8);
-		watchTasksForClicks(true);
 
 		// on database update we need to enable/disable buttons
 		enable_status = (updated_tasks.length > 0);
