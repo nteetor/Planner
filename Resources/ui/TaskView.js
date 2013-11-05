@@ -15,8 +15,7 @@ var TimePickerWindow = require('ui/timePickerWindow');
 function TaskView(task) {
 	task.start = new Date(task.start);
 	task.end = new Date(task.end);
-	Ti.API.info('task desc is '+db.getDesc(task.id));
-	task.description = db.getDesc(task.id);
+	task.descriptionForTaskView = task.descriptionForTaskView || '';
 
 	var self = Ti.UI.createWindow({
 		title : task.id ? L('edit_task') : L('add_task'),
@@ -118,7 +117,7 @@ function TaskView(task) {
 		left : FIELD_LEFT,
 		width : FIELD_WIDTH,
 		height : 30,
-		text : db.getDesc(task.id),
+		text : task.descriptionForTaskView,
 		font : {
 			fontSize : VALUEFONTSIZE
 		}
