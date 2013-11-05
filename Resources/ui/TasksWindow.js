@@ -37,9 +37,9 @@ function TasksWindow(containingTab) {
 		del.setEnabled(enable_status);
 		done.setEnabled(false);
 	};
-	
-	self.setScrollable = function(new_date){
-		tasks_table.setScrollable( (db.daycount(new_date) > 7) );
+
+	self.setScrollable = function(new_date) {
+		tasks_table.setScrollable((db.daycount(new_date) > 7));
 	};
 
 	var swipeEvent = function(e) {
@@ -102,9 +102,11 @@ function TasksWindow(containingTab) {
 		tasks_table.setScrollable(updated_tasks.length > 8);
 
 		// on database update we need to enable/disable buttons
-		enable_status = (updated_tasks.length > 0);
-		edit.setEnabled(enable_status);
-		del.setEnabled(enable_status);
+		if (!edit.enabled && !del.enabled) {
+			enable_status = (updated_tasks.length > 0);
+			edit.setEnabled(enable_status);
+			del.setEnabled(enable_status);
+		}
 	});
 
 	// add the table to our window
@@ -182,13 +184,15 @@ function TasksWindow(containingTab) {
 		});
 
 		// use reorder() to save the order of possibly user adjusted tasks
-		var reorderedTaskList = tasks_table.data[0];
-		var taskIDList = new Array();
-		for (var i = 0; i < reorderedTaskList.rowCount; i++) {
-			var row = reorderedTaskList.rows[i];
-			taskIDList.push(row.id);
+		if (db.daycount(focus_date) > 0) {
+			var reorderedTaskList = tasks_table.data[0];
+			var taskIDList = new Array();
+			for (var i = 0; i < reorderedTaskList.rowCount; i++) {
+				var row = reorderedTaskList.rows[i];
+				taskIDList.push(row.id);
+			}
+			db.reorder(taskIDList);
 		}
-		db.reorder(taskIDList);
 
 		// reset swipe event listener
 		self.addEventListener('swipe', swipeEvent);
