@@ -27,6 +27,8 @@ function TasksWindow(containingTab) {
 	};
 
 	var openTask = function(task) {
+		Ti.API.info('task in openTask is '+task);
+		Ti.API.info('task description is '+task.description.description);
 		var add_task = new TaskView(task);
 		add_task.open();
 	};
@@ -70,7 +72,7 @@ function TasksWindow(containingTab) {
 
 	self.addEventListener('swipe', swipeEvent);
 
-	tasks_list = db.daylist(focus_date);
+	var tasks_list = db.daylist(focus_date);
 
 	// TABLE OF TASKS (for a particular day)
 	var tasks_table = Ti.UI.createTableView({
@@ -82,7 +84,7 @@ function TasksWindow(containingTab) {
 
 	var watchTasksForClicks = function(watch) {
 		function clickEvent(e) {
-			openTask(e.row);
+			openTask(e.rowData);
 		}
 
 		if (watch) {
@@ -120,7 +122,8 @@ function TasksWindow(containingTab) {
 	add.addEventListener('click', function(e) {
 		openTask({
 			start : focus_date,
-			end : focus_date
+			end : focus_date,
+			description : ''
 		});
 	});
 
@@ -180,7 +183,7 @@ function TasksWindow(containingTab) {
 		});
 
 		// tasks can be 'opened'
-		watchTasksForClicks(true);
+		//watchTasksForClicks(true);
 
 		// use reorder() to save the order of possibly user adjusted tasks
 		var reorderedTaskList = tasks_table.data[0];

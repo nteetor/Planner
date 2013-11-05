@@ -115,7 +115,7 @@ function TaskView(task) {
 		left : FIELD_LEFT,
 		width : FIELD_WIDTH,
 		height : 30,
-		text : task.title ? task.title : '',
+		text : task.description,
 		font : {
 			fontSize : VALUEFONTSIZE
 		}
