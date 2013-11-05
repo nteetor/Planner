@@ -36,18 +36,31 @@ var monthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 /**
  * Returns time in form XX:XX XM eg 1:45 AM
  */
-var prettyTime = function(date){
+exports.natesPrettyTime = function(date){
 	date = new Date(date);
 	var xm = (date.getHours() >= 12) ? "PM" : "AM";
 	var newHour = date.getHours()%12;
 	var newMin = (date.getMinutes() < 10) ? "0"+date.getMinutes() : date.getMinutes();
 	return newHour+":"+newMin+" "+xm;
 };
-exports.prettyTime = prettyTime;
 
 exports.prettyDate = function(date) {
 	date = new Date(date);
 	return dayOfWeek[date.getDay()] + ', ' + monthName[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
+};
+
+exports.prettyTime = function(date) {
+	var hours = date.getHours(),
+		minutes = date.getMinutes();
+	var trailer = 'AM';
+	if (hours > 12) {
+		trailer = 'PM';
+		hours = hours - 12;
+	}
+	if (hours == 0) {
+		hours = 12;
+	}
+	return hours + ':' + minutes + ' ' + trailer;  
 };
 
 exports.tasksToRows = function(tasks) {

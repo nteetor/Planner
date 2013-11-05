@@ -174,7 +174,7 @@ function TaskView(task) {
 
 	//Ti.API.info(task.start);
 	var startValue = Ti.UI.createLabel({
-		text : task.start.getHours() + ':' + task.start.getMinutes(),
+		text : util.prettyTime(task.start),
 		left : FIELD_LEFT,
 		width : FIELD_WIDTH,
 		height : ROW_HEIGHT,
@@ -197,7 +197,7 @@ function TaskView(task) {
 		});
 		timePicker.open();
 		timePicker.addEventListener('close', function() {
-			startValue.text = task.start.toTimeString();
+			startValue.text = util.prettyTime(task.start);
 		});
 	});
 
@@ -213,7 +213,7 @@ function TaskView(task) {
 	});
 
 	var endValue = Ti.UI.createLabel({
-		text : task.start.getHours() + ':' + task.start.getMinutes(),
+		text : util.prettyTime(task.end),
 		left : FIELD_LEFT,
 		width : FIELD_WIDTH,
 		height : ROW_HEIGHT,
@@ -233,7 +233,7 @@ function TaskView(task) {
 		});
 		timePicker.open();
 		timePicker.addEventListener('close', function() {
-			endValue.text = task.end.toTimeString();
+			endValue.text = util.prettyTime(task.end);
 		});
 	});
 
