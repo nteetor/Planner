@@ -56,6 +56,7 @@ exports.daycount = function(_date) {
 
 exports.add = function(todo, sort) {
 	var db = Ti.Database.open('Todos');
+	Ti.API.info('description in add: '+todo.description);
 	db.execute("INSERT INTO todos(date, desc, start, end, sort) VALUES(?,?,?,?,?)", toDateValue(todo.start), todo.description, todo.start.valueOf(), todo.end.valueOf(), sort);
 	var n = db.lastInsertRowId;
 	db.close();
