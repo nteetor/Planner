@@ -114,7 +114,7 @@ function TaskView(task) {
 	var descriptionContent = Ti.UI.createLabel({
 		left : FIELD_LEFT,
 		width : FIELD_WIDTH,
-		height : ROW_HEIGHT,
+		height : 30,
 		text : task.title ? task.title : '',
 		font : {
 			fontSize : VALUEFONTSIZE
