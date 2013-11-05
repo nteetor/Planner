@@ -140,7 +140,6 @@ function TaskView(task) {
 			height : 30,
 			width : 80,
 			color : 'black',
-			backgroundColor : 'white',
 			textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER
 		});
 

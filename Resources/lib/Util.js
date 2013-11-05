@@ -72,12 +72,29 @@ exports.jacksNowSuperiorPrettyTime = function(date) {
 
 exports.tasksToRows = function(tasks) {
 	var tasks_rows = new Array();
+	var descriptionLabel, timesLabel, fontSize = 14;
 	for (var i = 0; i < tasks.length; i++) {
 		next_task = Ti.UI.createTableViewRow(tasks[i]);
-		next_task.setFont({
-			fontSize : 14
+		next_task.height = 40;
+		descriptionLabel = Ti.UI.createLabel({
+			text: tasks[i].description,
+			height: 20,
+			left: 10,
+			width: 150,
+			font: {
+				fontSize: fontSize
+			}
 		});
-		next_task.setTitle(tasks[i].description+'\t'+prettyTime(tasks[i].start)+' to '+prettyTime(tasks[i].end));
+		timesLabel = Ti.UI.createLabel({
+			text: prettyTime(tasks[i].start) + ' to ' + prettyTime(tasks[i].end),
+			right: 5,
+			height: 20,
+			font: {
+				fontSize: fontSize
+			}			
+		});
+		next_task.add(descriptionLabel);
+		next_task.add(timesLabel);
 		tasks_rows[i] = next_task;
 	}
 	return tasks_rows;

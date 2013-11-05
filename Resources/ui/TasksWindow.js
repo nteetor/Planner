@@ -39,7 +39,7 @@ function TasksWindow(containingTab) {
 	};
 	
 	self.setScrollable = function(new_date){
-		tasks_table.setScrollable( (db.daycount(new_date) > 8) );
+		tasks_table.setScrollable( (db.daycount(new_date) > 7) );
 	};
 
 	var swipeEvent = function(e) {
