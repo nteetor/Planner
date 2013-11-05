@@ -133,7 +133,7 @@ function TasksWindow(containingTab) {
 	edit.addEventListener('click', function(e) {
 		done.setEnabled(true);
 		del.setEnabled(false);
-		watchTasksForClicks(false);
+		tasks_table.setFocusable(false);
 		self.removeEventListener('swipe', swipeEvent);
 
 		task_ids = tasks_list.map(function(task) {
@@ -152,10 +152,10 @@ function TasksWindow(containingTab) {
 	del.addEventListener('click', function(e) {
 		edit.setEnabled(false);
 		done.setEnabled(true);
-		watchTasksForClicks(false);
 		self.removeEventListener('swipe', swipeEvent);
 
 		tasks_table.setEditable(true);
+		tasks_table.setFocusable(false);
 	});
 
 	// DONE button
@@ -175,12 +175,10 @@ function TasksWindow(containingTab) {
 
 		// stop editability of tasks
 		tasks_table.setEditable(false);
+		tasks_table.setFocusable(true);
 		tasks_table.addEventListener('delete', function(e) {
 			db.del(e.rowData.id);
 		});
-
-		// tasks can be 'opened'
-		watchTasksForClicks(true);
 
 		// use reorder() to save the order of possibly user adjusted tasks
 		var reorderedTaskList = tasks_table.data[0];
