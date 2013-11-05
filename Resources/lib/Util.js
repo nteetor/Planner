@@ -44,6 +44,20 @@ exports.prettyDate = function(date) {
 	return dayOfWeek[date.getDay()] + ', ' + monthName[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
 };
 
+exports.prettyTime = function(date) {
+	var hours = date.getHours(),
+		minutes = date.getMinutes();
+	var trailer = 'AM';
+	if (hours > 12) {
+		trailer = 'PM';
+		hours = hours - 12;
+	}
+	if (hours == 0) {
+		hours = 12;
+	}
+	return hours + ':' + minutes + ' ' + trailer;  
+};
+
 /**
  * Given an array of tasks this function converts the tasks into TableViewRow
  * objects so that extra parameters are preserved, the array of row
