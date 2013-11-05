@@ -37,6 +37,10 @@ function TasksWindow(containingTab) {
 		del.setEnabled(enable_status);
 		done.setEnabled(false);
 	};
+	
+	self.setScrollable = function(new_date){
+		tasks_table.setScrollable( (db.daycount(new_date) > 8) );
+	};
 
 	var swipeEvent = function(e) {
 		// if done is enabled then we are in edit or delete mode and should not allow swiping
@@ -61,17 +65,11 @@ function TasksWindow(containingTab) {
 		 */
 		self.setDay(focus_date);
 		self.setButtons(focus_date);
-	};
-
-	var bogusSwipeEvent = function(e) {
-		// do nothing
+		self.setScrollable(focus_date);
 	};
 
 	self.addEventListener('swipe', swipeEvent);
 
-	/*
-	 * the table view that will hold the tasks
-	 */
 	tasks_list = db.daylist(focus_date);
 
 	// TABLE OF TASKS (for a particular day)
@@ -80,7 +78,6 @@ function TasksWindow(containingTab) {
 		top : 0,
 		scrollable : (tasks_list.length > 8),
 		moveable : true,
-		//editable : true
 	});
 
 	var watchTasksForClicks = function(watch) {
@@ -189,15 +186,12 @@ function TasksWindow(containingTab) {
 		// use reorder() to save the order of possibly user adjusted tasks
 		var reorderedTaskList = tasks_table.data[0];
 		var taskIDList = new Array();
-		//Ti.API.info('newTaskOrder number of rows is/are '+reorderedTaskList.rowCount+'\n value is '+reorderedTaskList);
-		for (var i=0; i<reorderedTaskList.rowCount; i++) {
+		for (var i = 0; i < reorderedTaskList.rowCount; i++) {
 			var row = reorderedTaskList.rows[i];
 			taskIDList.push(row.id);
-			//Ti.API.info('task '+row+' with id '+row.id);
-			//Ti.API.info('task '+row+' has sort #'+row.sort);
 		}
 		db.reorder(taskIDList);
-		
+
 		// reset swipe event listener
 		self.addEventListener('swipe', swipeEvent);
 	});
