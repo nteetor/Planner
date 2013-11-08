@@ -246,6 +246,7 @@ function dayView(e) {
 	var dayLabel = Ti.UI.createLabel({
 		text : e.day,
 		textAlign : 'center',
+		current: e.current,
 		font : {
 			fontSize : 20,
 			fontWeight : 'bold'
