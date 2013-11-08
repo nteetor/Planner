@@ -39,8 +39,17 @@ var monthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
  */
 var prettyTime = function(date){
 	date = new Date(date);
-	var xm = (date.getHours() >= 12) ? "PM" : "AM";
-	var newHour = date.getHours()%12;
+	var newHour = date.getHours();
+	var xm = 'AM';
+	if (newHour == 0) {
+		newHour = 12;
+	}
+	if (newHour > 11) {
+		xm = 'PM';
+		if (newHour > 12) {
+			newHour = newHour - 12;	
+		}
+	}
 	var newMin = (date.getMinutes() < 10) ? "0"+date.getMinutes() : date.getMinutes();
 	return newHour+":"+newMin+" "+xm;
 };
