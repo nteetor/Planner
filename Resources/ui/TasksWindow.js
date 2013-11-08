@@ -77,7 +77,9 @@ function TasksWindow(containingTab) {
 		data : util.tasksToRows(tasks_list),
 		top : 0,
 		scrollable : (tasks_list.length > 8),
-		moveable : true,
+		moveable : false,
+		allowsSelectionDuringEditing: false,
+		editable: false
 	});
 
 	var watchTasksForClicks = function(watch) {
@@ -157,8 +159,8 @@ function TasksWindow(containingTab) {
 		done.setEnabled(true);
 		self.removeEventListener('swipe', swipeEvent);
 
-		tasks_table.setEditable(true);
 		tasks_table.setFocusable(false);
+		tasks_table.setEditing(true);
 	});
 
 	// DONE button
@@ -177,7 +179,7 @@ function TasksWindow(containingTab) {
 		tasks_table.setMoving(false);
 
 		// stop editability of tasks
-		tasks_table.setEditable(false);
+		tasks_table.setEditing(false);
 		tasks_table.setFocusable(true);
 		tasks_table.addEventListener('delete', function(e) {
 			db.del(e.rowData.id);
