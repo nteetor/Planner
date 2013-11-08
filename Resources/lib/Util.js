@@ -41,14 +41,14 @@ var prettyTime = function(date){
 	date = new Date(date);
 	var newHour = date.getHours();
 	var xm = 'AM';
+	if (newHour > 11) {
+		xm = 'PM';
+	}
 	if (newHour == 0) {
 		newHour = 12;
 	}
-	if (newHour > 11) {
-		xm = 'PM';
-		if (newHour > 12) {
-			newHour = newHour - 12;	
-		}
+	if (newHour > 12) {
+		newHour = newHour - 12;	
 	}
 	var newMin = (date.getMinutes() < 10) ? "0"+date.getMinutes() : date.getMinutes();
 	return newHour+":"+newMin+" "+xm;
