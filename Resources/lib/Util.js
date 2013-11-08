@@ -2,15 +2,28 @@
  * This file contains a number of useful utility functions
  */
 
-Array.prototype.move = function (old_index, new_index) {
-    if (new_index >= this.length) {
-        var k = new_index - this.length;
-        while ((k--) + 1) {
-            this.push(undefined);
-        }
-    }
-    this.splice(new_index, 0, this.splice(old_index, 1)[0]);
-    return this; // for testing purposes
+/**
+ * Colors
+ */
+var TasksWindowColor = {BACKGROUND_COLOR : '#A7CEEA', TINT_COLOR :'#07548B', TEXT_COLOR :'#185F92', BAR_COLOR : '#63B2EA'};
+exports.TasksWindowColor = TasksWindowColor;
+
+var TaskViewColor = {BACKGROUND_COLOR : '#CCA9EC', TEXT_COLOR : '#5D1A99'};
+exports.TaskViewColor = TaskViewColor;
+
+var CalendarWindowColor = {};
+exports.CalendarWindowColor = CalendarWindowColor;
+
+Array.prototype.move = function(old_index, new_index) {
+	if (new_index >= this.length) {
+		var k = new_index - this.length;
+		while ((k--) + 1) {
+			this.push(undefined);
+		}
+	}
+	this.splice(new_index, 0, this.splice(old_index, 1)[0]);
+	return this;
+	// for testing purposes
 };
 
 /**
@@ -25,7 +38,7 @@ exports.DEBUG = function(s) {
 
 /**
  * used to evenly distribute items on the toolbar
- */ 
+ */
 exports.flexSpace = Titanium.UI.createButton({
 	systemButton : Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE
 });
@@ -37,7 +50,7 @@ var monthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
  * Returns time in form XX:XX XM eg 1:45 AM
  * AKA natesPrettyTime
  */
-var prettyTime = function(date){
+var prettyTime = function(date) {
 	date = new Date(date);
 	var newHour = date.getHours();
 	var xm = 'AM';
@@ -48,23 +61,20 @@ var prettyTime = function(date){
 		newHour = 12;
 	}
 	if (newHour > 12) {
-		newHour = newHour - 12;	
+		newHour = newHour - 12;
 	}
-	var newMin = (date.getMinutes() < 10) ? "0"+date.getMinutes() : date.getMinutes();
-	return newHour+":"+newMin+" "+xm;
+	var newMin = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
+	return newHour + ":" + newMin + " " + xm;
 };
 exports.prettyTime = prettyTime;
-
 
 exports.prettyDate = function(date) {
 	date = new Date(date);
 	return dayOfWeek[date.getDay()] + ', ' + monthName[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
 };
 
-
 exports.jacksNowSuperiorPrettyTime = function(date) {
-	var hours = date.getHours(),
-		minutes = date.getMinutes();
+	var hours = date.getHours(), minutes = date.getMinutes();
 	var trailer = 'AM';
 	if (hours > 12) {
 		trailer = 'PM';
@@ -73,10 +83,10 @@ exports.jacksNowSuperiorPrettyTime = function(date) {
 	if (hours == 0) {
 		hours = 12;
 	}
-	if (minutes < 10){
-		minutes = '0'+minutes;
+	if (minutes < 10) {
+		minutes = '0' + minutes;
 	}
-	return hours + ':' + minutes + ' ' + trailer;  
+	return hours + ':' + minutes + ' ' + trailer;
 };
 
 exports.tasksToRows = function(tasks) {
@@ -86,21 +96,23 @@ exports.tasksToRows = function(tasks) {
 		next_task = Ti.UI.createTableViewRow(tasks[i]);
 		next_task.height = 40;
 		descriptionLabel = Ti.UI.createLabel({
-			text: tasks[i].description,
-			height: 20,
-			left: 10,
-			width: 150,
-			font: {
-				fontSize: fontSize
-			}
+			text : tasks[i].description,
+			height : 20,
+			left : 10,
+			width : 150,
+			font : {
+				fontSize : fontSize
+			},
+			color : TasksWindowColor.TEXT_COLOR
 		});
 		timesLabel = Ti.UI.createLabel({
-			text: prettyTime(tasks[i].start) + ' to ' + prettyTime(tasks[i].end),
-			right: 5,
-			height: 20,
-			font: {
-				fontSize: fontSize
-			}			
+			text : prettyTime(tasks[i].start) + ' to ' + prettyTime(tasks[i].end),
+			right : 5,
+			height : 20,
+			font : {
+				fontSize : fontSize
+			},
+			color : TasksWindowColor.TEXT_COLOR
 		});
 		next_task.add(descriptionLabel);
 		next_task.add(timesLabel);

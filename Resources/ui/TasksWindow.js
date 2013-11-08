@@ -5,9 +5,17 @@ var util = require('lib/Util');
 function TasksWindow(containingTab) {
 	var self = Ti.UI.createWindow({
 		title : L('tasks'),
-		backgroundColor : 'white',
-		layout : 'vertical'
+		layout : 'vertical',
+		backgroundColor : util.TasksWindowColor.BACKGROUND_COLOR,
+		statusBarStyle : Titanium.UI.iPhone.StatusBar.LIGHT_CONTENT,
+		tintColor : util.TasksWindowColor.TINT_COLOR,
+		barColor : util.TasksWindowColor.BAR_COLOR,
+		navTintColor : util.TasksWindowColor.TINT_COLOR
 	});
+	
+	// var window_title = self.getTitleControl();
+	// window_title.shadowColor = TEXT_COLOR;
+	// self.setTitleControl(window_title);
 
 	var focus_date = new Date(Ti.App.Properties.getObject('focus_date'));
 	Ti.App.Properties.addEventListener('change', function() {
@@ -18,9 +26,10 @@ function TasksWindow(containingTab) {
 	var self_title = Ti.UI.createLabel({
 		text : util.prettyDate(focus_date),
 		top : 5,
+		color : util.TasksWindowColor.TEXT_COLOR
 	});
 	self.add(self_title);
-
+	
 	self.setDay = function(new_date) {
 		self_title.setText(util.prettyDate(new_date));
 		tasks_table.setData(util.tasksToRows(db.daylist(new_date)));
@@ -78,6 +87,7 @@ function TasksWindow(containingTab) {
 		top : 0,
 		scrollable : (tasks_list.length > 8),
 		moveable : true,
+		backgroundColor : util.TasksWindowColor.BACKGROUND_COLOR
 	});
 
 	var watchTasksForClicks = function(watch) {
@@ -117,7 +127,8 @@ function TasksWindow(containingTab) {
 	*/
 	// ADD button
 	var add = Ti.UI.createButton({
-		systemButton : Titanium.UI.iPhone.SystemButton.ADD
+		systemButton : Titanium.UI.iPhone.SystemButton.ADD,
+		color : util.TasksWindowColor.TEXT_COLOR
 	});
 	add.addEventListener('click', function(e) {
 		openTask({
@@ -130,7 +141,9 @@ function TasksWindow(containingTab) {
 	// EDIT button
 	var edit = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.EDIT,
-		enabled : (tasks_list.length > 0)
+		enabled : (tasks_list.length > 0),
+		color : util.TasksWindowColor.TEXT_COLOR,
+		backgroundImage : 'none'
 	});
 
 	edit.addEventListener('click', function(e) {
@@ -149,7 +162,8 @@ function TasksWindow(containingTab) {
 	// DELETE button
 	var del = Ti.UI.createButton({
 		systemButton : Titanium.UI.iPhone.SystemButton.TRASH,
-		enabled : (tasks_list.length > 0)
+		enabled : (tasks_list.length > 0),
+		color : util.TasksWindowColor.TEXT_COLOR
 	});
 
 	del.addEventListener('click', function(e) {
@@ -163,8 +177,10 @@ function TasksWindow(containingTab) {
 
 	// DONE button
 	var done = Ti.UI.createButton({
-		systemButton : Titanium.UI.iPhone.SystemButton.DONE,
-		enabled : false
+		//systemButton : Titanium.UI.iPhone.SystemButton.DONE,
+		title : '+',
+		enabled : false,
+		color : util.TasksWindowColor.TEXT_COLOR
 	});
 
 	done.addEventListener('click', function(e) {

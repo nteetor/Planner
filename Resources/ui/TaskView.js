@@ -3,6 +3,7 @@ var Todo = require('lib/Todo');
 var util = require('lib/Util');
 var TimePickerWindow = require('ui/timePickerWindow');
 
+
 /**
  * A function which opens a view to either:
  * 	1) add a new task to the focus_date's list of tasks
@@ -19,8 +20,9 @@ function TaskView(task) {
 
 	var self = Ti.UI.createWindow({
 		title : task.id ? L('edit_task') : L('add_task'),
-		backgroundColor : 'white',
-		navBarHidden : true
+		backgroundColor : '#CCA9EC',
+		navBarHidden : true,
+		statusBarStyle : Titanium.UI.iPhone.StatusBar.LIGHT_CONTENT
 	});
 
 	self.setLeftNavButton(Ti.UI.createView({}));
@@ -33,7 +35,8 @@ function TaskView(task) {
 		top : 40,
 		font : {
 			fontSize : 24
-		}
+		},
+		color : '#600CAC'
 	});
 
 	/*
@@ -43,12 +46,13 @@ function TaskView(task) {
 	// OK BUTTON
 	var ok = Ti.UI.createButton({
 		title : L('ok'),
+		color : '#600CAC'
 	});
 	ok.addEventListener('click', function(e) {
 		if (task.start > task.end) {
 			alert('End time comes before start time');
 		} else {
-			Ti.API.info('line 50 in TaskView.js, description is '+task.description);
+			Ti.API.info('line 50 in TaskView.js, description is ' + task.description);
 			var new_task = new Todo({
 				'start' : task.start,
 				'end' : task.end,
@@ -69,7 +73,8 @@ function TaskView(task) {
 
 	// CANCEL BUTTON
 	var cancel = Ti.UI.createButton({
-		title : L('cancel')
+		title : L('cancel'),
+		color : '#600CAC'
 	});
 	cancel.addEventListener('click', function(e) {
 		self.close();
@@ -80,10 +85,11 @@ function TaskView(task) {
 		systemButton : Ti.UI.iPhone.SystemButton.FIXED_SPACE
 	});
 
+	// OK/CANCEL BUTTON BAR
 	var button_bar = Titanium.UI.iOS.createToolbar({
 		items : [fixedSpace, cancel, util.flexSpace, ok, fixedSpace],
-		bottom : 10,
-		barColor : '#AAAAAA'
+		bottom : 50,
+		barColor : '#CCA9EC',
 	});
 
 	/*
