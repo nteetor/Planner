@@ -2,6 +2,7 @@
 // Author:  R. M. Salter
 var db = require('lib/db');
 var screenWidth = Ti.Platform.displayCaps.platformWidth;
+var util = require('lib/Util');
 
 // exported function CalendarView returns a new monthly view
 // dis_date is the date whose year and month are to be displayed; sel_date is currently selected JS date
@@ -77,7 +78,7 @@ function makeToolBar(yr, mo) {
 	var toolBar = Ti.UI.createView({
 		width : screenWidth,
 		height : 50,
-		backgroundColor : '#FFFFD800',
+		backgroundColor : util.CalendarWindowColor.BACKGROUND_COLOR,
 		layout : 'vertical'
 	});
 	// Tool Bar Title
@@ -92,7 +93,7 @@ function makeToolBar(yr, mo) {
 		height : 24,
 		text: monthName[mo]+' '+yr,
 		textAlign : 'center',
-		color : '#3a4756',
+		color : util.CalendarWindowColor.TEXT_COLOR,
 		font : {
 			fontSize : 20,
 			fontWeight : 'bold'
@@ -118,7 +119,7 @@ function makeToolBar(yr, mo) {
 				fontSize : 12,
 				fontWeight : 'bold'
 			},
-			color : '#3a4756'
+			color : util.CalendarWindowColor.TEXT_COLOR
 		});
 	};
 	for (var i in dayOfWeek) toolBarDays.add(dayLabel(dayOfWeek[i]));
@@ -238,8 +239,8 @@ function dayView(e) {
 		height : '44dp',
 		current: e.current,
 		color: e.color,
-		backgroundColor : '#FFDCDCDF',
-		borderColor: '#CCCCCC',
+		backgroundColor : util.CalendarWindowColor.BACKGROUND_COLOR,
+		borderColor: util.CalendarWindowColor.BORDER_COLOR,
 		borderWidth: '1dp'
 	});
 
@@ -259,8 +260,8 @@ function dayView(e) {
 			textAlign: 'center',
 			right: '2dp',
 			top: '2dp',
-			backgroundColor: 'red',
-			color: 'white',
+			backgroundColor: 'orange',
+			color: 'black',
 			font: {
 				fontSize: 9,
 				fontWeight: 'bold'

@@ -5,13 +5,28 @@
 /**
  * Colors
  */
-var TasksWindowColor = {BACKGROUND_COLOR : '#A7CEEA', TINT_COLOR :'#07548B', TEXT_COLOR :'#185F92', BAR_COLOR : '#63B2EA'};
+var TasksWindowColor = {
+	BACKGROUND_COLOR : '#A7CEEA',
+	TINT_COLOR : '#07548B',
+	TEXT_COLOR : '#185F92',
+	BAR_COLOR : '#63B2EA'
+};
 exports.TasksWindowColor = TasksWindowColor;
 
-var TaskViewColor = {BACKGROUND_COLOR : '#CCA9EC', TEXT_COLOR : '#5D1A99'};
+var TaskViewColor = {
+	BACKGROUND_COLOR : '#CCA9EC',
+	TINT_COLOR : '#500892',
+	TEXT_COLOR : '#5D1A99'
+};
 exports.TaskViewColor = TaskViewColor;
 
-var CalendarWindowColor = {};
+var CalendarWindowColor = {
+	BACKGROUND_COLOR : '#FFEDB1',
+	TINT_COLOR : '#D9A600',
+	TEXT_COLOR : '#E4B418',
+	BAR_COLOR : '#FFDA62',
+	BORDER_COLOR : '#FFC300'
+};
 exports.CalendarWindowColor = CalendarWindowColor;
 
 Array.prototype.move = function(old_index, new_index) {
@@ -22,7 +37,7 @@ Array.prototype.move = function(old_index, new_index) {
 		}
 	}
 	this.splice(new_index, 0, this.splice(old_index, 1)[0]);
-	return this;
+	//return this;
 	// for testing purposes
 };
 

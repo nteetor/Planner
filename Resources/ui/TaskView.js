@@ -20,7 +20,7 @@ function TaskView(task) {
 
 	var self = Ti.UI.createWindow({
 		title : task.id ? L('edit_task') : L('add_task'),
-		backgroundColor : '#CCA9EC',
+		backgroundColor : util.TaskViewColor.BACKGROUND_COLOR,
 		navBarHidden : true,
 		statusBarStyle : Titanium.UI.iPhone.StatusBar.LIGHT_CONTENT
 	});
@@ -36,7 +36,7 @@ function TaskView(task) {
 		font : {
 			fontSize : 24
 		},
-		color : '#600CAC'
+		color : util.TaskViewColor.TEXT_COLOR
 	});
 
 	/*
