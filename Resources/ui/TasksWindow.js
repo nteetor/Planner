@@ -202,7 +202,7 @@ function TasksWindow(containingTab) {
 		});
 
 		// use reorder() to save the order of possibly user adjusted tasks
-		if (db.daycount(focus_date) > 0) {
+		if (db.daycount(focus_date) > 1) {
 			var reorderedTaskList = tasks_table.data[0];
 			var taskIDList = new Array();
 			for (var i = 0; i < reorderedTaskList.rowCount; i++) {
