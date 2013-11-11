@@ -243,10 +243,12 @@ function dayView(e) {
 		borderColor: util.CalendarWindowColor.BORDER_COLOR,
 		borderWidth: '1dp'
 	});
+	
 
 	var dayLabel = Ti.UI.createLabel({
 		text : e.day,
 		textAlign : 'center',
+		color: e.current == 'yes' ? 'black' : '#888888',
 		current: e.current,
 		font : {
 			fontSize : 20,
