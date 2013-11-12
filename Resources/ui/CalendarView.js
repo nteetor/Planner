@@ -6,7 +6,7 @@ var util = require('lib/Util');
 
 // exported function CalendarView returns a new monthly view
 // dis_date is the date whose year and month are to be displayed; sel_date is currently selected JS date
-// _cb is a callback function that is invoked on the new selected JS date when one is selected  
+// _cb is a callback function that is invoked on the new selected JS date when one is selected
 
 function CalendarView(dis_date, sel_date, _cb) {
 	// break down display date -- only need month and year
@@ -20,10 +20,12 @@ function CalendarView(dis_date, sel_date, _cb) {
 	var toolBar = makeToolBar(dyr, dmo);
 	var cal = calendar(dyr, dmo, syr, smo, sda, tyr, tmo, tda, _cb);
 	// Main View of the Month View.
-	var self = Ti.UI.createView({layout: 'vertical'});
+	var self = Ti.UI.createView({
+		layout : 'vertical'
+	});
 	self.add(toolBar);
 	self.add(cal);
-	
+
 	// if 'up' increment month, 'down' decrement
 	self.shiftMonth = function(direction) {
 		if (direction == 'up') {
@@ -41,20 +43,21 @@ function CalendarView(dis_date, sel_date, _cb) {
 				dmo--;
 			}
 		}
-		toolBar = makeToolBar(dyr, dmo);		
+		toolBar = makeToolBar(dyr, dmo);
 		cal = calendar(dyr, dmo, syr, smo, sda, tyr, tmo, tda, _cb);
 		self.removeAllChildren();
 		self.add(toolBar);
 		self.add(cal);
 	};
-	
+
 	Ti.API.addEventListener('setCalDate', function(e) {
-		if (sameDate(dis_date, e.date) && sameDate(sel_date, e.date)) return;
+		if (sameDate(dis_date, e.date) && sameDate(sel_date, e.date))
+			return;
 		sel_date = e.date;
 		dis_date = e.date;
 		// break down selected date
 		var syr = sel_date.getFullYear(), smo = sel_date.getMonth(), sda = sel_date.getDate();
-		toolBar = makeToolBar(syr, smo);		
+		toolBar = makeToolBar(syr, smo);
 		cal = calendar(syr, smo, syr, smo, sda, tyr, tmo, tda, _cb);
 		self.removeAllChildren();
 		self.add(toolBar);
@@ -66,9 +69,7 @@ function CalendarView(dis_date, sel_date, _cb) {
 // Help function to identify to JS dates that represent the same real date
 
 function sameDate(d0, d1) {
-	return d0.getFullYear() == d1.getFullYear() 
-		&& d0.getMonth() == d1.getMonth()
-		&& d0.getDate() == d1.getDate();
+	return d0.getFullYear() == d1.getFullYear() && d0.getMonth() == d1.getMonth() && d0.getDate() == d1.getDate();
 }
 
 // Builds the toolbar for a give year and month
@@ -91,7 +92,7 @@ function makeToolBar(yr, mo) {
 	var monthTitle = Ti.UI.createLabel({
 		width : 200,
 		height : 24,
-		text: monthName[mo]+' '+yr,
+		text : monthName[mo] + ' ' + yr,
 		textAlign : 'center',
 		color : util.CalendarWindowColor.TEXT_COLOR,
 		font : {
@@ -122,7 +123,8 @@ function makeToolBar(yr, mo) {
 			color : util.CalendarWindowColor.TEXT_COLOR
 		});
 	};
-	for (var i in dayOfWeek) toolBarDays.add(dayLabel(dayOfWeek[i]));
+	for (var i in dayOfWeek)
+	toolBarDays.add(dayLabel(dayOfWeek[i]));
 	// Adding Tool Bar Title View & Tool Bar Days View
 	toolBar.add(toolBarTitle);
 	toolBar.add(toolBarDays);
@@ -143,14 +145,14 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 		height : 'auto',
 		cb : _cb
 	});
-	
+
 	// determine the cal data
 	var isCurrentMonth = (yr == tyr && mo == tmo);
 	var isSelectedMonth = (yr == syr && mo == smo);
 	var daysInMonth = 32 - new Date(yr, mo, 32).getDate();
 	var dayOfMonthToday = tda;
 	var dayOfWeek = new Date(yr, mo, 1).getDay();
-	var daysInLastMonth = 32 - new Date(yr, mo-1, 32).getDate();
+	var daysInLastMonth = 32 - new Date(yr, mo - 1, 32).getDate();
 	var daysInNextMonth = (new Date(yr, mo, daysInMonth).getDay()) - 6;
 	//set initial day of week number
 	var dayNumber = daysInLastMonth - dayOfWeek + 1;
@@ -168,60 +170,66 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 	dayNumber = 1;
 	//get this month's days
 	var oldDay = {};
-	for ( i = 0; i < daysInMonth; i++) { 
-		var newDay = new dayView({ 
+	for ( i = 0; i < daysInMonth; i++) {
+		var newDay = new dayView({
 			day : dayNumber,
 			taskcount : db.daycount(new Date(yr, mo, dayNumber)),
-			color : '#3a4756', 
-			current : 'yes', 
-		}); 
+			color : util.CalendarWindowColor.CURRENTDATE_COLOR, //'#3a4756',
+			current : 'yes',
+		});
 		mainView.add(newDay);
 		// if this day is today, show it
 		if (isCurrentMonth && tda == dayNumber) {
-			newDay.color = 'white'; 
-			newDay.backgroundColor = '#FFFFF000';
-			oldDay = newDay; 		
+			newDay.color = 'white';
+			newDay.backgroundColor = util.CalendarWindowColor.CURRENTDATE_COLOR; //'#FFFFF000';
+			oldDay = newDay;
 		}
 		// if this day is the chosen day, select it
-		if (isSelectedMonth && dayNumber == sda) select(newDay);
-	    dayNumber++;		
+		if (isSelectedMonth && dayNumber == sda)
+			select(newDay);
+		dayNumber++;
 	}
-	// reset day number for next month	
+	// reset day number for next month
 	dayNumber = 1;
 	//get remaining month's days
 	for ( i = 0; i > daysInNextMonth; i--) {
-		  mainView.add(new dayView({
-			 day : dayNumber,
-			 taskcount : db.daycount(new Date(yr, mo, dayNumber)),
-			 color : '#8e959f',
-			 current : 'no',
-		  }));
-	     dayNumber++;
-	 }
+		mainView.add(new dayView({
+			day : dayNumber,
+			taskcount : db.daycount(new Date(yr, mo, dayNumber)),
+			color : '#8e959f',
+			current : 'no',
+		}));
+		dayNumber++;
+	}
 	// day selection event listener
 	mainView.addEventListener('click', function(e) {
 		if (e.source.current == 'yes') {
 			select(e.source);
-			if (mainView.cb != null) mainView.cb(new Date(yr, mo, e.source.text));
+			if (mainView.cb != null)
+				mainView.cb(new Date(yr, mo, e.source.text));
 		}
-	}); 
+	});
 	return mainView;
 
 	// function to highlight selected day
 	function select(dayView) {
 		if (isCurrentMonth && oldDay.text == dayOfMonthToday) {
 			oldDay.color = 'white';
-			oldDay.backgroundColor = '#FFFFF000';
+			oldDay.backgroundColor = util.CalendarWindowColor.CURRENTDATE_COLOR;			//'#FFFFF000';
+			oldDay.borderColor = util.CalendarWindowColor.CURRENTDATE_COLOR;
 		} else {
 			oldDay.color = '#3a4756';
-			oldDay.backgroundColor = '#FFDCDCDF';
+			oldDay.backgroundColor = util.CalendarWindowColor.FOCUSDATE_COLOR;			//'#FFDCDCDF';
+			oldDay.borderColor = util.CalendarWindowColor.FOCUSDATE_COLOR;
 		}
 		oldDay.backgroundPaddingLeft = 0;
 		oldDay.backgroundPaddingBottom = 0;
 		if (isCurrentMonth && dayView.text == dayOfMonthToday) {
-			dayView.backgroundColor = '#FFFF00FF';
+			dayView.backgroundColor = util.CalendarWindowColor.CURRENTDATE_COLOR;			//'#FFFF00FF';
+			dayView.borderColor = util.CalendarWindowColor.CURRENTDATE_COLOR;
 		} else {
-			dayView.backgroundColor = '#FFFF0000';
+			dayView.backgroundColor = util.CalendarWindowColor.FOCUSDATE_COLOR;			//'#FFFF0000';
+			dayView.borderColor = util.CalendarWindowColor.FOCUSDATE_COLOR;
 		}
 		dayView.backgroundPaddingLeft = 1;
 		dayView.backgroundPaddingBottom = 1;
@@ -237,51 +245,49 @@ function dayView(e) {
 	var self = Ti.UI.createView({
 		width : '46dp',
 		height : '44dp',
-		current: e.current,
-		color: e.color,
+		current : e.current,
+		color : e.color,
 		backgroundColor : util.CalendarWindowColor.BACKGROUND_COLOR,
-		borderColor: util.CalendarWindowColor.BORDER_COLOR,
-		borderWidth: '1dp'
+		borderColor : util.CalendarWindowColor.BORDER_COLOR,
+		borderWidth : '1dp'
 	});
-	
 
 	var dayLabel = Ti.UI.createLabel({
 		text : e.day,
 		textAlign : 'center',
-		color: e.current == 'yes' ? 'black' : '#888888',
-		current: e.current,
+		color : e.current == 'yes' ? 'black' : '#888888',
+		current : e.current,
 		font : {
 			fontSize : 20,
 			fontWeight : 'bold'
 		}
 	});
-	
+
 	if (e.taskcount) {
 		var taskNotifier = Ti.UI.createLabel({
-			text: e.taskcount,
-			textAlign: 'center',
-			right: '2dp',
-			top: '2dp',
-			backgroundColor: 'orange',
-			color: 'black',
-			font: {
-				fontSize: 9,
-				fontWeight: 'bold'
+			text : e.taskcount,
+			textAlign : 'center',
+			right : '2dp',
+			top : '2dp',
+			//backgroundColor : util.CalendarWindowColor.BACKGROUND_COLOR,
+			color : 'black',
+			font : {
+				fontSize : 9,
+				fontWeight : 'bold'
 			}
 		});
 		self.add(taskNotifier);
 	}
 
 	self.text = dayLabel.text;
-	
+
 	self.add(dayLabel);
 
 	return self;
-}; 
+};
 
 var dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-var monthName = ['January', 'February', 'March', 'April', 'May', 'June', 
-				 'July', 'August', 'September', 'October', 'November', 'December'];
+var monthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 exports = CalendarView;
