@@ -225,8 +225,8 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 		oldDay.backgroundPaddingLeft = 0;
 		oldDay.backgroundPaddingBottom = 0;
 		if (isCurrentMonth && dayView.text == dayOfMonthToday) {
-			dayView.backgroundColor = util.CalendarWindowColor.CURRENTDATE_COLOR;			//'#FFFF00FF';
-			dayView.borderColor = util.CalendarWindowColor.CURRENTDATE_COLOR;
+			dayView.backgroundColor = util.CalendarWindowColor.OVERLAP_COLOR;			//'#FFFF00FF';
+			dayView.borderColor = util.CalendarWindowColor.OVERLAP_COLOR;
 		} else {
 			dayView.backgroundColor = util.CalendarWindowColor.FOCUSDATE_COLOR;			//'#FFFF0000';
 			dayView.borderColor = util.CalendarWindowColor.FOCUSDATE_COLOR;

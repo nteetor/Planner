@@ -3,7 +3,6 @@ var Todo = require('lib/Todo');
 var util = require('lib/Util');
 var TimePickerWindow = require('ui/timePickerWindow');
 
-
 /**
  * A function which opens a view to either:
  * 	1) add a new task to the focus_date's list of tasks
@@ -46,13 +45,12 @@ function TaskView(task) {
 	// OK BUTTON
 	var ok = Ti.UI.createButton({
 		title : L('ok'),
-		color : '#600CAC'
+		color : util.TaskViewColor.TEXT_COLOR
 	});
 	ok.addEventListener('click', function(e) {
 		if (task.start > task.end) {
 			alert('End time comes before start time');
 		} else {
-			Ti.API.info('line 50 in TaskView.js, description is ' + task.description);
 			var new_task = new Todo({
 				'start' : task.start,
 				'end' : task.end,
@@ -74,7 +72,7 @@ function TaskView(task) {
 	// CANCEL BUTTON
 	var cancel = Ti.UI.createButton({
 		title : L('cancel'),
-		color : '#600CAC'
+		color : util.TaskViewColor.TEXT_COLOR
 	});
 	cancel.addEventListener('click', function(e) {
 		self.close();
@@ -89,7 +87,7 @@ function TaskView(task) {
 	var button_bar = Titanium.UI.iOS.createToolbar({
 		items : [fixedSpace, cancel, util.flexSpace, ok, fixedSpace],
 		bottom : 50,
-		barColor : '#CCA9EC',
+		barColor : util.TaskViewColor.BACKGROUND_COLOR,
 	});
 
 	/*
@@ -110,6 +108,7 @@ function TaskView(task) {
 
 	var description_label = Ti.UI.createLabel({
 		text : L('description'),
+		color : util.TaskViewColor.TEXT_COLOR,
 		left : 10,
 		width : LABEL_WIDTH,
 		height : ROW_HEIGHT,
@@ -123,6 +122,7 @@ function TaskView(task) {
 		left : FIELD_LEFT,
 		width : FIELD_WIDTH,
 		height : 30,
+		color : util.TaskViewColor.TEXT_COLOR,
 		text : task.descriptionForTaskView,
 		font : {
 			fontSize : VALUEFONTSIZE
@@ -157,8 +157,17 @@ function TaskView(task) {
 
 		textArea.addEventListener('blur', function() {
 			descriptionContent.text = textArea.value;
+			// remove textAreaRow from table
+			//fields_table.deleteRow(1);
 			textWin.close();
 		});
+
+		// var textAreaRow = Ti.UI.createTableViewRow({
+			// selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
+		// });
+		// textAreaRow.add(textArea);
+
+		//fields_table.insertRowAfter(0, textAreaRow);
 
 		textWin.add(textArea);
 		textWin.add(cancelButton);
@@ -174,6 +183,7 @@ function TaskView(task) {
 		left : 10,
 		width : LABEL_WIDTH,
 		height : ROW_HEIGHT,
+		color : util.TaskViewColor.TEXT_COLOR,
 		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
 		font : {
 			fontSize : LABELFONTSIZE
@@ -186,6 +196,7 @@ function TaskView(task) {
 		left : FIELD_LEFT,
 		width : FIELD_WIDTH,
 		height : ROW_HEIGHT,
+		color : util.TaskViewColor.TEXT_COLOR,
 		right : 10,
 		font : {
 			fontSize : VALUEFONTSIZE
@@ -214,6 +225,7 @@ function TaskView(task) {
 		left : 10,
 		width : LABEL_WIDTH,
 		height : ROW_HEIGHT,
+		color : util.TaskViewColor.TEXT_COLOR,
 		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
 		font : {
 			fontSize : LABELFONTSIZE
@@ -226,6 +238,7 @@ function TaskView(task) {
 		width : FIELD_WIDTH,
 		height : ROW_HEIGHT,
 		right : 10,
+		color : util.TaskViewColor.TEXT_COLOR,
 		font : {
 			fontSize : VALUEFONTSIZE
 		}
@@ -254,9 +267,10 @@ function TaskView(task) {
 	var fields_table = Ti.UI.createTableView({
 		data : data,
 		top : 80,
-		backgroundColor : 'white',
+		backgroundColor : util.TaskViewColor.BACKGROUND_COLOR,
 		style : Ti.UI.iPhone.TableViewStyle.GROUPED,
-		scrollable : false
+		scrollable : false,
+		separatorColor : util.TaskViewColor.BACKGROUND_COLOR
 	});
 
 	self.add(tasks_label);

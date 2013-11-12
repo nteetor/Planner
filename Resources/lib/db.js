@@ -56,7 +56,6 @@ exports.daycount = function(_date) {
 
 exports.add = function(todo, sort) {
 	var db = Ti.Database.open('Todos');
-	Ti.API.info('description in add: '+todo.description);
 	db.execute("INSERT INTO todos(date, desc, start, end, sort) VALUES(?,?,?,?,?)", toDateValue(todo.start), todo.description, todo.start.valueOf(), todo.end.valueOf(), sort);
 	var n = db.lastInsertRowId;
 	db.close();
@@ -97,11 +96,11 @@ exports.reorder = function(ids) {
 	Ti.App.fireEvent("databaseUpdated");
 };
 
-exports.getDesc = function(id){
+exports.getDesc = function(id) {
 	var db = Ti.Database.open('Todos');
-	var result = db.execute('SELECT * FROM todos WHERE id=?',id);
+	var result = db.execute('SELECT * FROM todos WHERE id=?', id);
 	var desc = '';
-	if (result.isValidRow()){
+	if (result.isValidRow()) {
 		desc = result.fieldByName('desc');
 	}
 	db.close();

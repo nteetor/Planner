@@ -27,7 +27,8 @@ var CalendarWindowColor = {
 	BAR_COLOR : '#FFDA62',
 	BORDER_COLOR : '#FFC300',
 	CURRENTDATE_COLOR : '#FFC300', //'#FFA240', //orange-ish
-	FOCUSDATE_COLOR : '#FF5D40' //red-ish
+	FOCUSDATE_COLOR : '#FF5D40', //red-ish
+	OVERLAP_COLOR : '#6D70D4'
 };
 exports.CalendarWindowColor = CalendarWindowColor;
 
