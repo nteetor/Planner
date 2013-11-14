@@ -51,7 +51,7 @@ function CalendarView(dis_date, sel_date, _cb) {
 	};
 
 	Ti.API.addEventListener('setCalDate', function(e) {
-		if (sameDate(dis_date, e.date) && sameDate(sel_date, e.date))
+		if (sameDate(dis_date, e.date) && sameDate(sel_date, e.date) && !e.force)
 			return;
 		sel_date = e.date;
 		dis_date = e.date;
