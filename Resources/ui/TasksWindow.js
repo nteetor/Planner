@@ -53,7 +53,6 @@ function TasksWindow(containingTab) {
 
 	var swipeEvent = function(e) {
 		// if done is enabled then we are in edit or delete mode and should not allow swiping
-
 		// if swipe left then increment the date
 		if (e.direction == 'left') {
 			focus_date = new Date(focus_date.setDate(focus_date.getDate() + 1));

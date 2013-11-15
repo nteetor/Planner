@@ -60,6 +60,10 @@ exports.add = function(todo, sort) {
 	var n = db.lastInsertRowId;
 	db.close();
 	Ti.App.fireEvent("databaseUpdated");
+	Ti.API.fireEvent('setCalDate', {
+		date : new Date(Ti.App.Properties.getObject('focus_date')),
+		force: true
+	});
 	return n;
 };
 
