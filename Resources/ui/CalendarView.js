@@ -181,7 +181,7 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 		// if this day is today, show it
 		if (isCurrentMonth && tda == dayNumber) {
 			//newDay.color = 'white';
-			//newDay.backgroundColor = util.CalendarWindowColor.CURRENTDATE_COLOR; //'#FFFFF000';
+			newDay.backgroundColor = util.CalendarWindowColor.CURRENTDATE_COLOR; //'#FFFFF000';
 			oldDay = newDay;
 		}
 		// if this day is the chosen day, select it
