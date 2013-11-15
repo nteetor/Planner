@@ -231,6 +231,13 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 			dayView.backgroundColor = util.CalendarWindowColor.FOCUSDATE_COLOR;			//'#FFFF0000';
 			dayView.borderColor = util.CalendarWindowColor.FOCUSDATE_COLOR;
 		}
+		// to fix the strange color bug we were having, reclicking the overlapping date should not result in a color change
+		if (oldDay.text == dayView.text){
+			dayView.backgroundColor = util.CalendarWindowColor.OVERLAP_COLOR;			//'#FFFF00FF';
+			dayView.borderColor = util.CalendarWindowColor.OVERLAP_COLOR;
+			oldDay.backgroundColor = util.CalendarWindowColor.OVERLAP_COLOR;			//'#FFFF00FF';
+			oldDay.borderColor = util.CalendarWindowColor.OVERLAP_COLOR;
+		}
 		dayView.backgroundPaddingLeft = 1;
 		dayView.backgroundPaddingBottom = 1;
 		//dayView.color = 'white';
