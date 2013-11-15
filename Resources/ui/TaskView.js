@@ -1,6 +1,7 @@
 var db = require('lib/db');
 var Todo = require('lib/Todo');
 var util = require('lib/Util');
+var TaskViewTable = require('ui/TaskViewTable');
 var TimePickerWindow = require('ui/timePickerWindow');
 
 /**
@@ -39,22 +40,24 @@ function TaskView(task) {
 	});
 
 	/*
-	* Button bar section
-	* includes OKAY and CANCEL buttons and the button bar itself
-	*/
-	// OK BUTTON
+	 *  OK BUTTON
+	 */
 	var ok = Ti.UI.createButton({
 		title : L('ok'),
-		color : util.TaskViewColor.TEXT_COLOR
+		color : util.TaskViewColor.TEXT_COLOR,
+		right : 30
 	});
 	ok.addEventListener('click', function(e) {
+		task.start = fields_table.getStartTime();
+		task.end = fields_table.getEndTime(); 
+		
 		if (task.start > task.end) {
 			alert('End time comes before start time');
 		} else {
 			var new_task = new Todo({
 				'start' : task.start,
 				'end' : task.end,
-				'description' : descriptionContent.text
+				'description' : fields_table.getDescription() //descriptionContent.text
 			});
 
 			if (task.id) {
@@ -69,213 +72,31 @@ function TaskView(task) {
 		}
 	});
 
-	// CANCEL BUTTON
+	/*
+	 *  CANCEL BUTTON
+	 */
 	var cancel = Ti.UI.createButton({
 		title : L('cancel'),
-		color : util.TaskViewColor.TEXT_COLOR
+		color : util.TaskViewColor.TEXT_COLOR,
+		left : 20
 	});
 	cancel.addEventListener('click', function(e) {
 		self.close();
 	});
-
-	var fixedSpace = Ti.UI.createButton({
-		width : 10,
-		systemButton : Ti.UI.iPhone.SystemButton.FIXED_SPACE
-	});
-
-	// OK/CANCEL BUTTON BAR
-	var button_bar = Titanium.UI.iOS.createToolbar({
-		items : [fixedSpace, cancel, util.flexSpace, ok, fixedSpace],
-		bottom : 50,
-		barColor : util.TaskViewColor.BACKGROUND_COLOR,
-	});
-
-	/*
-	* Task fields section, includes a tableview to hold the label-textfield pairs
-	* also event listeners
-	*/
-	// some constants because I got sick of chaning variables
-	var LABEL_WIDTH = 110;
-	var FIELD_WIDTH = 160;
-	var LABELFONTSIZE = 18;
-	var VALUEFONTSIZE = 18;
-	var ROW_HEIGHT = 40;
-	var FIELD_LEFT = LABEL_WIDTH + 20;
-
-	var descriptionRow = Ti.UI.createTableViewRow({
+	
+	var cancelOKRow = Ti.UI.createTableViewRow({
 		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
+		height : 30
 	});
+	
+	cancelOKRow.add(cancel);
+	cancelOKRow.add(ok);
 
-	var description_label = Ti.UI.createLabel({
-		text : L('description'),
-		color : util.TaskViewColor.TEXT_COLOR,
-		left : 10,
-		width : LABEL_WIDTH,
-		height : ROW_HEIGHT,
-		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
-		font : {
-			fontSize : LABELFONTSIZE
-		}
-	});
-
-	var descriptionContent = Ti.UI.createLabel({
-		left : FIELD_LEFT,
-		width : FIELD_WIDTH,
-		height : 30,
-		color : util.TaskViewColor.TEXT_COLOR,
-		text : task.descriptionForTaskView,
-		font : {
-			fontSize : VALUEFONTSIZE
-		}
-	});
-
-	descriptionRow.addEventListener('click', function() {
-		var textWin = Ti.UI.createWindow({
-			navBarHidden : true,
-			backgroundColor : 'black'
-		});
-		var textArea = Ti.UI.createTextArea({
-			value : descriptionContent.text,
-			height : 150,
-			width : 300,
-			top : 50,
-			returnKeyType : Ti.UI.RETURNKEY_DONE
-		});
-
-		var cancelButton = Ti.UI.createButton({
-			title : L('cancel'),
-			top : 10,
-			height : 30,
-			width : 80,
-			color : 'black',
-			textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER
-		});
-
-		cancelButton.addEventListener('click', function() {
-			textWin.close();
-		});
-
-		textArea.addEventListener('blur', function() {
-			descriptionContent.text = textArea.value;
-			// remove textAreaRow from table
-			//fields_table.deleteRow(1);
-			textWin.close();
-		});
-
-		// var textAreaRow = Ti.UI.createTableViewRow({
-			// selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
-		// });
-		// textAreaRow.add(textArea);
-
-		//fields_table.insertRowAfter(0, textAreaRow);
-
-		textWin.add(textArea);
-		textWin.add(cancelButton);
-		textWin.open();
-		textArea.focus();
-	});
-
-	descriptionRow.add(description_label);
-	descriptionRow.add(descriptionContent);
-
-	var startLabel = Ti.UI.createLabel({
-		text : L('start_time'),
-		left : 10,
-		width : LABEL_WIDTH,
-		height : ROW_HEIGHT,
-		color : util.TaskViewColor.TEXT_COLOR,
-		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
-		font : {
-			fontSize : LABELFONTSIZE
-		}
-	});
-
-	//Ti.API.info(task.start);
-	var startValue = Ti.UI.createLabel({
-		text : util.prettyTime(task.start),
-		left : FIELD_LEFT,
-		width : FIELD_WIDTH,
-		height : ROW_HEIGHT,
-		color : util.TaskViewColor.TEXT_COLOR,
-		right : 10,
-		font : {
-			fontSize : VALUEFONTSIZE
-		}
-	});
-
-	var startRow = Ti.UI.createTableViewRow({
-		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
-	});
-
-	startRow.add(startLabel);
-	startRow.add(startValue);
-
-	startRow.addEventListener('click', function() {
-		var timePicker = new TimePickerWindow(task.start, function(time) {
-			task.start = time;
-		});
-		timePicker.open();
-		timePicker.addEventListener('close', function() {
-			startValue.text = util.prettyTime(task.start);
-		});
-	});
-
-	var endLabel = Ti.UI.createLabel({
-		text : L('end_time'),
-		left : 10,
-		width : LABEL_WIDTH,
-		height : ROW_HEIGHT,
-		color : util.TaskViewColor.TEXT_COLOR,
-		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
-		font : {
-			fontSize : LABELFONTSIZE
-		}
-	});
-
-	var endValue = Ti.UI.createLabel({
-		text : util.prettyTime(task.end),
-		left : FIELD_LEFT,
-		width : FIELD_WIDTH,
-		height : ROW_HEIGHT,
-		right : 10,
-		color : util.TaskViewColor.TEXT_COLOR,
-		font : {
-			fontSize : VALUEFONTSIZE
-		}
-	});
-
-	var endRow = Ti.UI.createTableViewRow({
-		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
-	});
-
-	endRow.addEventListener('click', function() {
-		var timePicker = new TimePickerWindow(task.end, function(time) {
-			task.end = time;
-		});
-		timePicker.open();
-		timePicker.addEventListener('close', function() {
-			endValue.text = util.prettyTime(task.end);
-		});
-	});
-
-	endRow.add(endLabel);
-	endRow.add(endValue);
-
-	var data = [descriptionRow, startRow, endRow];
-
-	// using a table we can achieve the label text-area look we want for this page
-	var fields_table = Ti.UI.createTableView({
-		data : data,
-		top : 80,
-		backgroundColor : util.TaskViewColor.BACKGROUND_COLOR,
-		style : Ti.UI.iPhone.TableViewStyle.GROUPED,
-		scrollable : false,
-		separatorColor : util.TaskViewColor.BACKGROUND_COLOR
-	});
-
+	var fields_table = new TaskViewTable(task);
+	fields_table.addCancelOKRow(cancelOKRow);
+	
 	self.add(tasks_label);
 	self.add(fields_table);
-	self.add(button_bar);
 
 	return self;
 }

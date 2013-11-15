@@ -180,8 +180,8 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 		mainView.add(newDay);
 		// if this day is today, show it
 		if (isCurrentMonth && tda == dayNumber) {
-			newDay.color = 'white';
-			newDay.backgroundColor = util.CalendarWindowColor.CURRENTDATE_COLOR; //'#FFFFF000';
+			//newDay.color = 'white';
+			//newDay.backgroundColor = util.CalendarWindowColor.CURRENTDATE_COLOR; //'#FFFFF000';
 			oldDay = newDay;
 		}
 		// if this day is the chosen day, select it
@@ -214,11 +214,11 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 	// function to highlight selected day
 	function select(dayView) {
 		if (isCurrentMonth && oldDay.text == dayOfMonthToday) {
-			oldDay.color = 'white';
+			//oldDay.color = 'white';
 			oldDay.backgroundColor = util.CalendarWindowColor.CURRENTDATE_COLOR;			//'#FFFFF000';
 			oldDay.borderColor = util.CalendarWindowColor.CURRENTDATE_COLOR;
 		} else {
-			oldDay.color = '#3a4756';
+			//oldDay.color = '#3a4756';
 			oldDay.backgroundColor = util.CalendarWindowColor.FOCUSDATE_COLOR;			//'#FFDCDCDF';
 			oldDay.borderColor = util.CalendarWindowColor.FOCUSDATE_COLOR;
 		}
@@ -233,7 +233,7 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 		}
 		dayView.backgroundPaddingLeft = 1;
 		dayView.backgroundPaddingBottom = 1;
-		dayView.color = 'white';
+		//dayView.color = 'white';
 		oldDay = dayView;
 	};
 };
