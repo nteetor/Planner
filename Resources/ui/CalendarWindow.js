@@ -8,7 +8,13 @@ function CalendarWindow(openTaskDayFunction) {
 	var self = Ti.UI.createWindow({
 		title : L('calendar'),
 		backgroundColor : util.CalendarWindowColor.BACKGROUND_COLOR,
-		barColor : util.CalendarWindowColor.BAR_COLOR
+		barColor : util.CalendarWindowColor.BAR_COLOR,
+		orientationModes: [
+        	Ti.UI.LANDSCAPE_LEFT,
+	        Ti.UI.LANDSCAPE_RIGHT,
+    	    Ti.UI.PORTRAIT,
+        	Ti.UI.UPSIDE_PORTRAIT
+	    ]		
 	});
 
 	var focus_date = Ti.App.Properties.getObject('focus_date');
