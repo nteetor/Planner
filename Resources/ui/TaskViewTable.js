@@ -61,7 +61,7 @@ function TaskViewTable(task) {
 			endPickerCancel.setLeft(endPickerCancel.left / OKCANCEL_FACTOR);
 			endPickerOK.setRight(endPickerOK.right / OKCANCEL_FACTOR);
 			
-		} else {
+		} else if (orientation == Ti.UI.LANDSCAPE_LEFT || orientation == Ti.UI.LANDSCAPE_RIGHT){
 			allFields.map(function(field) {
 				field.setLeft(field.left + LEFT_ADJUST);
 				field.setHeight(field.height - ROWHEIGHT_ADJUST);

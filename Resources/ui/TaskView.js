@@ -18,17 +18,19 @@ function TaskView(task) {
 	task.end = new Date(task.end);
 	task.descriptionForTaskView = task.descriptionForTaskView || '';
 
+	var CHANGE_FACTOR = 4;
 	Ti.Gesture.addEventListener('orientationchange', function(e) {
-		var CHANGE_FACTOR = 4;
-		
-		fields_table.reorientTable(e.orientation);
-		
+
 		if (e.orientation == Ti.UI.PORTRAIT) {
-			ok.setRight(ok.right/CHANGE_FACTOR);
-			cancel.setLeft(cancel.left/CHANGE_FACTOR);
-		} else {
-			ok.setRight(ok.right*CHANGE_FACTOR);
-			cancel.setLeft(cancel.left*CHANGE_FACTOR);
+			fields_table.reorientTable(e.orientation);
+
+			ok.setRight(ok.right / CHANGE_FACTOR);
+			cancel.setLeft(cancel.left / CHANGE_FACTOR);
+		} else if (e.orientation == Ti.UI.LANDSCAPE_LEFT || e.orientation == Ti.UI.LANDSCAPE_RIGHT) {
+			fields_table.reorientTable(e.orientation);
+
+			ok.setRight(ok.right * CHANGE_FACTOR);
+			cancel.setLeft(cancel.left * CHANGE_FACTOR);
 		}
 	});
 
@@ -112,6 +114,13 @@ function TaskView(task) {
 
 	self.add(fields_table);
 	self.add(tasks_label);
+
+	if (Ti.Gesture.isLandscape()) {
+		fields_table.reorientTable(Ti.Gesture.getOrientation());
+
+		ok.setRight(ok.right * CHANGE_FACTOR);
+		cancel.setLeft(cancel.left * CHANGE_FACTOR);
+	}
 
 	return self;
 }
