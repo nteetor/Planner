@@ -2,7 +2,7 @@ var util = require('lib/Util');
 var TasksWindow = require('ui/TasksWindow');
 var CalendarWindow = require('ui/CalendarWindow');
 
-function ApplicationTabGroup(Window) {
+function ApplicationTabGroup() {
 	// set the global focus date to the current date
 	Ti.App.Properties.setObject('focus_date', new Date());
 	util.DEBUG('focus date is ' + Ti.App.Properties.getObject('focus_date'));

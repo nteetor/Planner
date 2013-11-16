@@ -27,14 +27,11 @@ if (Ti.version < 1.8 ) {
 	//yourself what you consider a tablet form factor for android
 	var isTablet = osname === 'ipad' || (osname === 'android' && (width > 899 || height > 899));
 	
-	var Window;
-	if (isTablet) {
-		Window = require('ui/ApplicationWindow');
-	}
-	else {
-		Window = require('ui/ApplicationWindow');
-	}
+	
+	Ti.Gesture.addEventListener('orientationchange', function(e) {
+
+	});
 
 	var ApplicationTabGroup = require('ui/ApplicationTabGroup');
-	new ApplicationTabGroup(Window).open();
+	new ApplicationTabGroup().open();
 })();
