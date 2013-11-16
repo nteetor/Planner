@@ -32,6 +32,30 @@ var CalendarWindowColor = {
 };
 exports.CalendarWindowColor = CalendarWindowColor;
 
+exports.CalendarViewLandscape = {
+	DAY_H : '30dp',
+	DAY_W : '60dp',
+	CAL_W : 420,
+	TOOL_W : 420,
+	TOOL_DAYS_W : 420,
+	TOOL_DAYS_H : 18,
+	TOOL_DAYS_FULL: true,
+	TOOL_DAYS_TEXT: 10, 
+	DAY_TEXT: 14,
+	TOOLBAR_H: 44
+};
+
+exports.CalendarViewPortrait = {
+	DAY_H : '44dp',
+	DAY_W : '46dp',
+	CAL_W : 322,
+	TOOL_DAYS_H : 22,
+	TOOL_DAYS_W : 322,
+	TOOL_DAYS_TEXT: 12, 
+	DAY_TEXT: 20,
+	TOOLBAR_H: 50
+};
+
 Array.prototype.move = function(old_index, new_index) {
 	if (new_index >= this.length) {
 		var k = new_index - this.length;

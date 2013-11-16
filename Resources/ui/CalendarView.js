@@ -8,7 +8,7 @@ var util = require('lib/Util');
 // dis_date is the date whose year and month are to be displayed; sel_date is currently selected JS date
 // _cb is a callback function that is invoked on the new selected JS date when one is selected
 
-function CalendarView(dis_date, sel_date, _cb) {
+function CalendarView(dis_date, sel_date, portrait, _cb) {
 	// break down display date -- only need month and year
 	var dyr = dis_date.getFullYear(), dmo = dis_date.getMonth();
 	// break down selected date
@@ -17,13 +17,23 @@ function CalendarView(dis_date, sel_date, _cb) {
 	today = new Date();
 	// break down today
 	var tyr = today.getFullYear(), tmo = today.getMonth(), tda = today.getDate();
-	var toolBar = makeToolBar(dyr, dmo);
-	var cal = calendar(dyr, dmo, syr, smo, sda, tyr, tmo, tda, _cb);
+	
+		
+	var sizes;
+	if (portrait) {
+		sizes = util.CalendarViewPortrait;
+	} else {
+		sizes = util.CalendarViewLandscape;
+	}
+	
+	var toolBar = makeToolBar(dyr, dmo, sizes);
+	var cal = calendar(dyr, dmo, syr, smo, sda, tyr, tmo, tda, sizes, _cb);
 	// Main View of the Month View.
 	var self = Ti.UI.createView({
 		layout : 'vertical'
 	});
 
+	
 	self.add(toolBar);
 	self.add(cal);
 
@@ -44,8 +54,8 @@ function CalendarView(dis_date, sel_date, _cb) {
 				dmo--;
 			}
 		}
-		toolBar = makeToolBar(dyr, dmo);
-		cal = calendar(dyr, dmo, syr, smo, sda, tyr, tmo, tda, _cb);
+		toolBar = makeToolBar(dyr, dmo, sizes);
+		cal = calendar(dyr, dmo, syr, smo, sda, tyr, tmo, tda, sizes, _cb);
 		self.removeAllChildren();
 		self.add(toolBar);
 		self.add(cal);
@@ -57,30 +67,35 @@ function CalendarView(dis_date, sel_date, _cb) {
 		sel_date = e.date;
 		dis_date = e.date;
 		// break down selected date
-		var syr = sel_date.getFullYear(), smo = sel_date.getMonth(), sda = sel_date.getDate();
-		toolBar = makeToolBar(syr, smo);
-		cal = calendar(syr, smo, syr, smo, sda, tyr, tmo, tda, _cb);
+		syr = sel_date.getFullYear(), smo = sel_date.getMonth(), sda = sel_date.getDate();
+		toolBar = makeToolBar(syr, smo, sizes);
+		cal = calendar(syr, smo, syr, smo, sda, tyr, tmo, tda, sizes, _cb);
 		self.removeAllChildren();
 		self.add(toolBar);
 		self.add(cal);
 	});
+
+	self.makeLandscape = function() {
+		sizes = util.CalendarViewLandscape;
+		syr = sel_date.getFullYear(), smo = sel_date.getMonth(), sda = sel_date.getDate();
+		toolBar = makeToolBar(syr, smo, sizes);
+		cal = calendar(syr, smo, syr, smo, sda, tyr, tmo, tda, sizes, _cb);
+		self.removeAllChildren();
+		self.add(toolBar);
+		self.add(cal);
+	};
+	
+	self.makePortrait = function() {
+		sizes = util.CalendarViewPortrait;
+		var syr = sel_date.getFullYear(), smo = sel_date.getMonth(), sda = sel_date.getDate();
+		toolBar = makeToolBar(syr, smo, sizes);
+		cal = calendar(syr, smo, syr, smo, sda, tyr, tmo, tda, sizes, _cb);
+		self.removeAllChildren();
+		self.add(toolBar);
+		self.add(cal);
+	};
+	
 	return self;
-	
-	function makeLandscape() {
-		
-	}
-	
-	function makePortrait() {
-		
-	}
-		
-	Ti.Gesture.addEventListener('orientationchange', function(e) {
-		if (Ti.Gesture.isLandscape(e.orientation)) {
-			makeLandscape();
-		} else {
-			makePortrait();
-		}
-	});
 }
 
 // Help function to identify to JS dates that represent the same real date
@@ -91,18 +106,18 @@ function sameDate(d0, d1) {
 
 // Builds the toolbar for a give year and month
 
-function makeToolBar(yr, mo) {
+function makeToolBar(yr, mo, sizes) {
 	// Tool Bar
 	var toolBar = Ti.UI.createView({
-		width : screenWidth,
-		height : 50,
+		width : sizes.TOOL_W || Ti.Platform.displayCaps.platformWidth,
+		height : sizes.TOOLBAR_H,
 		backgroundColor : util.CalendarWindowColor.BACKGROUND_COLOR,
 		layout : 'vertical'
 	});
 	// Tool Bar Title
 	var toolBarTitle = Ti.UI.createView({
 		top : '3dp',
-		width : '322dp',
+		width : sizes.TOOL_DAYS_W,
 		height : '24dp'
 	});
 	// Month Title - Tool Bar
@@ -121,27 +136,28 @@ function makeToolBar(yr, mo) {
 	// Tool Bar Day
 	var toolBarDays = Ti.UI.createView({
 		top : 2,
-		width : 322,
-		height : 22,
+		width : sizes.TOOL_DAYS_W,
+		height : sizes.TOOL_DAYS_H,
 		layout : 'horizontal',
 		left : 0
 	});
-	var dayLabel = function(daytxt) {
+	var dayLabel = function(day) {
+		sizes.TOOL_DAYS_FULL ? day = dayOfWeekFull[i] : day = dayOfWeek[i];
 		return Ti.UI.createLabel({
 			left : '0dp',
 			height : '20dp',
-			text : daytxt,
-			width : '46dp',
+			text : day,
+			width : sizes.DAY_W,
 			textAlign : 'center',
 			font : {
-				fontSize : 12,
+				fontSize : sizes.TOOL_DAYS_TEXT,
 				fontWeight : 'bold'
 			},
 			color : util.CalendarWindowColor.TEXT_COLOR
 		});
 	};
 	for (var i in dayOfWeek)
-	toolBarDays.add(dayLabel(dayOfWeek[i]));
+	toolBarDays.add(dayLabel(i));
 	// Adding Tool Bar Title View & Tool Bar Days View
 	toolBar.add(toolBarTitle);
 	toolBar.add(toolBarDays);
@@ -153,12 +169,12 @@ function makeToolBar(yr, mo) {
 // tyr, tmo and tda are today
 // _cb is the callback applied to the new selected date when one is selected
 
-var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
+var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, sizes, _cb) {
 	// yr,mo,da are selected day; tyr,tmo,tda are today
 	//create main calendar view
 	var mainView = Ti.UI.createView({
 		layout : 'horizontal',
-		width : 322,
+		width : sizes.CAL_W,
 		height : 'auto',
 		cb : _cb
 	});
@@ -176,6 +192,9 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 	//get last month's days
 	for ( i = 0; i < dayOfWeek; i++) {
 		mainView.add(new dayView({
+			width: sizes.DAY_W,
+			height: sizes.DAY_H,
+			fontSize: sizes.DAY_TEXT,
 			day : dayNumber,
 			taskcount : db.daycount(new Date(yr, mo, dayNumber)),
 			color : '#8e959f',
@@ -190,6 +209,9 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 	for ( i = 0; i < daysInMonth; i++) {
 		var newDay = new dayView({
 			day : dayNumber,
+			width: sizes.DAY_W,
+			height: sizes.DAY_H,
+			fontSize: sizes.DAY_TEXT,
 			taskcount : db.daycount(new Date(yr, mo, dayNumber)),
 			color : util.CalendarWindowColor.CURRENTDATE_COLOR, //'#3a4756',
 			current : 'yes',
@@ -211,6 +233,9 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 	//get remaining month's days
 	for ( i = 0; i > daysInNextMonth; i--) {
 		mainView.add(new dayView({
+			width: sizes.DAY_W,
+			height: sizes.DAY_H,
+			fontSize: sizes.DAY_TEXT,
 			day : dayNumber,
 			taskcount : db.daycount(new Date(yr, mo, dayNumber)),
 			color : '#8e959f',
@@ -267,8 +292,8 @@ var calendar = function(yr, mo, syr, smo, sda, tyr, tmo, tda, _cb) {
 
 function dayView(e) {
 	var self = Ti.UI.createView({
-		width : '46dp',
-		height : '44dp',
+		width : e.width,
+		height : e.height,
 		current : e.current,
 		color : e.color,
 		backgroundColor : util.CalendarWindowColor.BACKGROUND_COLOR,
@@ -282,7 +307,7 @@ function dayView(e) {
 		color : e.current == 'yes' ? 'black' : '#888888',
 		current : e.current,
 		font : {
-			fontSize : 20,
+			fontSize : e.fontSize,
 			fontWeight : 'bold'
 		}
 	});
@@ -311,6 +336,7 @@ function dayView(e) {
 };
 
 var dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+var dayOfWeekFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 var monthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
