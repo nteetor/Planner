@@ -10,7 +10,8 @@ function TasksWindow(containingTab) {
 		statusBarStyle : Titanium.UI.iPhone.StatusBar.LIGHT_CONTENT,
 		tintColor : util.TasksWindowColor.TINT_COLOR,
 		barColor : util.TasksWindowColor.BAR_COLOR,
-		navTintColor : util.TasksWindowColor.TINT_COLOR
+		navTintColor : util.TasksWindowColor.TINT_COLOR,
+		orientationModes : [Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT, Ti.UI.PORTRAIT]
 	});
 	
 	// var window_title = self.getTitleControl();

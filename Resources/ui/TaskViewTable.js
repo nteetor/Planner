@@ -10,11 +10,12 @@ var VALUEFONTSIZE = 18;
 var ROW_HEIGHT = 40;
 var FIELD_LEFT = LABEL_WIDTH + 20;
 var TEXTAREA_HEIGHT = 150;
+var BASE_FIELDS = 6;
 
 function TaskViewTable(task) {
 	// using a table we can achieve the label text-area look we want for this page
 	var self = Ti.UI.createTableView({
-		top : 80,
+		top : 30,
 		backgroundColor : util.TaskViewColor.BACKGROUND_COLOR,
 		style : Ti.UI.iPhone.TableViewStyle.GROUPED,
 		scrollable : false,
@@ -37,6 +38,44 @@ function TaskViewTable(task) {
 	/*
 	* IMPORTANT PUBLIC METHODS
 	*/
+	/**
+	 * on orientation change
+	 */
+	self.reorientTable = function(orientation) {
+		var allFields = [description_label, descriptionContent, startLabel, startValue, endLabel, endValue];
+		var LEFT_ADJUST = 150;
+		var ROWHEIGHT_ADJUST = 15;
+		var WIDTH_FACTOR = 1.5;
+		var OKCANCEL_FACTOR = 12;
+
+		if (orientation == Ti.UI.PORTRAIT) {
+			allFields.map(function(field) {
+				field.setLeft(field.left - LEFT_ADJUST);
+				field.setHeight(field.height + ROWHEIGHT_ADJUST);
+			});
+			textArea.setWidth(textArea.width / WIDTH_FACTOR);
+
+			startPickerCancel.setLeft(startPickerCancel.left / OKCANCEL_FACTOR);
+			startPickerOK.setRight(startPickerOK.right / OKCANCEL_FACTOR);
+
+			endPickerCancel.setLeft(endPickerCancel.left / OKCANCEL_FACTOR);
+			endPickerOK.setRight(endPickerOK.right / OKCANCEL_FACTOR);
+			
+		} else {
+			allFields.map(function(field) {
+				field.setLeft(field.left + LEFT_ADJUST);
+				field.setHeight(field.height - ROWHEIGHT_ADJUST);
+			});
+			textArea.setWidth(textArea.width * WIDTH_FACTOR);
+
+			startPickerCancel.setLeft(startPickerCancel.left * OKCANCEL_FACTOR);
+			startPickerOK.setRight(startPickerOK.right * OKCANCEL_FACTOR);
+
+			endPickerCancel.setLeft(endPickerCancel.left * OKCANCEL_FACTOR);
+			endPickerOK.setRight(endPickerOK.right * OKCANCEL_FACTOR);
+		}
+	};
+
 	/**
 	 * getDescription, this should pull the description from 'descriptionContent' (text of descriptionContent)
 	 */
@@ -70,6 +109,7 @@ function TaskViewTable(task) {
 	 * DESCRIPTION ROW
 	 */
 	var descriptionRow = Ti.UI.createTableViewRow({
+		height : ROW_HEIGHT,
 		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
 	});
 
@@ -88,7 +128,7 @@ function TaskViewTable(task) {
 	var descriptionContent = Ti.UI.createLabel({
 		left : FIELD_LEFT,
 		width : FIELD_WIDTH,
-		height : 30,
+		height : ROW_HEIGHT,
 		color : util.TaskViewColor.TEXT_COLOR,
 		text : task.descriptionForTaskView,
 		font : {

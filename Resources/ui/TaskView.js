@@ -18,11 +18,26 @@ function TaskView(task) {
 	task.end = new Date(task.end);
 	task.descriptionForTaskView = task.descriptionForTaskView || '';
 
+	Ti.Gesture.addEventListener('orientationchange', function(e) {
+		var CHANGE_FACTOR = 4;
+		
+		fields_table.reorientTable(e.orientation);
+		
+		if (e.orientation == Ti.UI.PORTRAIT) {
+			ok.setRight(ok.right/CHANGE_FACTOR);
+			cancel.setLeft(cancel.left/CHANGE_FACTOR);
+		} else {
+			ok.setRight(ok.right*CHANGE_FACTOR);
+			cancel.setLeft(cancel.left*CHANGE_FACTOR);
+		}
+	});
+
 	var self = Ti.UI.createWindow({
 		title : task.id ? L('edit_task') : L('add_task'),
 		backgroundColor : util.TaskViewColor.BACKGROUND_COLOR,
 		navBarHidden : true,
-		statusBarStyle : Titanium.UI.iPhone.StatusBar.LIGHT_CONTENT
+		statusBarStyle : Titanium.UI.iPhone.StatusBar.LIGHT_CONTENT,
+		orientationModes : [Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT, Ti.UI.PORTRAIT]
 	});
 
 	self.setLeftNavButton(Ti.UI.createView({}));
@@ -32,7 +47,7 @@ function TaskView(task) {
 	 */
 	var tasks_label = Ti.UI.createLabel({
 		text : task.id ? L('edit_task') : L('add_task'),
-		top : 40,
+		top : 20,
 		font : {
 			fontSize : 24
 		},
@@ -49,8 +64,8 @@ function TaskView(task) {
 	});
 	ok.addEventListener('click', function(e) {
 		task.start = fields_table.getStartTime();
-		task.end = fields_table.getEndTime(); 
-		
+		task.end = fields_table.getEndTime();
+
 		if (task.start > task.end) {
 			alert('End time comes before start time');
 		} else {
@@ -83,20 +98,20 @@ function TaskView(task) {
 	cancel.addEventListener('click', function(e) {
 		self.close();
 	});
-	
+
 	var cancelOKRow = Ti.UI.createTableViewRow({
 		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
 		height : 30
 	});
-	
+
 	cancelOKRow.add(cancel);
 	cancelOKRow.add(ok);
 
 	var fields_table = new TaskViewTable(task);
 	fields_table.addCancelOKRow(cancelOKRow);
-	
-	self.add(tasks_label);
+
 	self.add(fields_table);
+	self.add(tasks_label);
 
 	return self;
 }
