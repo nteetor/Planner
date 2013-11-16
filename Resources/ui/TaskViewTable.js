@@ -166,7 +166,9 @@ function TaskViewTable(task) {
 	startRow.add(startValue);
 
 	startRow.addEventListener('click', function() {
-		insertRowAfter(1, startPickerRow);
+		if (data.length <= 5) {
+			insertRowAfter(1, startPickerRow);
+		}
 	});
 
 	/*
@@ -250,7 +252,9 @@ function TaskViewTable(task) {
 	});
 
 	endRow.addEventListener('click', function() {
-		insertRowAfter(2, endPickerRow);
+		if (data.length <= 5) {
+			insertRowAfter(2, endPickerRow);
+		}
 	});
 
 	endRow.add(endLabel);
