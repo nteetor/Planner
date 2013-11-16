@@ -12,8 +12,7 @@ function CalendarWindow(openTaskDayFunction) {
 		orientationModes: [
         	Ti.UI.LANDSCAPE_LEFT,
 	        Ti.UI.LANDSCAPE_RIGHT,
-    	    Ti.UI.PORTRAIT,
-        	Ti.UI.UPSIDE_PORTRAIT
+    	    Ti.UI.PORTRAIT
 	    ]		
 	});
 
