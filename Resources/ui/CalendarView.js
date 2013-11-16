@@ -23,6 +23,7 @@ function CalendarView(dis_date, sel_date, _cb) {
 	var self = Ti.UI.createView({
 		layout : 'vertical'
 	});
+
 	self.add(toolBar);
 	self.add(cal);
 
@@ -64,6 +65,22 @@ function CalendarView(dis_date, sel_date, _cb) {
 		self.add(cal);
 	});
 	return self;
+	
+	function makeLandscape() {
+		
+	}
+	
+	function makePortrait() {
+		
+	}
+		
+	Ti.Gesture.addEventListener('orientationchange', function(e) {
+		if (Ti.Gesture.isLandscape(e.orientation)) {
+			makeLandscape();
+		} else {
+			makePortrait();
+		}
+	});
 }
 
 // Help function to identify to JS dates that represent the same real date
