@@ -40,8 +40,7 @@ function TaskViewTable(task) {
 	/**
 	 * getDescription, this should pull the description from 'descriptionContent' (text of descriptionContent)
 	 */
-	self.getDescription = function() {
-		alert(descriptionContent.text);
+	self.getMFDescription = function() {
 		return descriptionContent.text;
 	};
 
