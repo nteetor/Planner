@@ -57,7 +57,7 @@ function TaskView(task) {
 			var new_task = new Todo({
 				'start' : task.start,
 				'end' : task.end,
-				'description' : fields_table.getDescription() //descriptionContent.text
+				'description' : fields_table.getMFDescription() //descriptionContent.text
 			});
 
 			if (task.id) {
