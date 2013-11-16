@@ -15,6 +15,7 @@ function CalendarWindow(openTaskDayFunction) {
     	    Ti.UI.PORTRAIT
 	    ]		
 	});
+	
 
 	var focus_date = Ti.App.Properties.getObject('focus_date');
 	Ti.App.Properties.addEventListener('change', function() {
@@ -24,7 +25,7 @@ function CalendarWindow(openTaskDayFunction) {
 		});
 	});
 
-	var calendarView = new CalendarView(focus_date, focus_date, function(selected_date) {
+	var calendarView = new CalendarView(focus_date, focus_date, Ti.Gesture.isPortrait(), function(selected_date) {
 		Ti.App.Properties.setObject('focus_date', selected_date);
 		openTaskDayFunction();
 	});
@@ -36,6 +37,15 @@ function CalendarWindow(openTaskDayFunction) {
 			calendarView.shiftMonth('down');
 		}
 	});
+			
+	Ti.Gesture.addEventListener('orientationchange', function(e) {
+		if (Ti.Gesture.isLandscape(e.orientation)) {
+			calendarView.makeLandscape();
+		} else {
+			calendarView.makePortrait();
+		}
+	});
+
 	self.add(calendarView);
 	return self;
 }
