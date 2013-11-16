@@ -308,7 +308,9 @@ function TaskViewTable(task) {
 	endPickerRow.add(endPickerOK);
 	endPickerRow.add(endPicker);
 
-	var blankRow = Ti.UI.createTableViewRow();
+	var blankRow = Ti.UI.createTableViewRow({
+		selectionStyle : Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
+	});
 
 	var data = [descriptionRow, startRow, endRow, blankRow];
 	self.setData(data);
