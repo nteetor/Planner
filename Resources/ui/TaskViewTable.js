@@ -8,9 +8,17 @@ var FIELD_WIDTH = 160;
 var LABELFONTSIZE = 18;
 var VALUEFONTSIZE = 18;
 var ROW_HEIGHT = 40;
-var FIELD_LEFT = LABEL_WIDTH + 20;
-var TEXTAREA_HEIGHT = 150;
-var BASE_FIELDS = 6;
+var LEFT_INDENT = 10, CONTENT_INDENT = 130;
+var TEXTAREA_HEIGHT = 150, TEXTAREA_WIDTH = 300;
+var BUTTON_INDENT = 10;
+
+/*
+ * Variables for horizontal mode
+ */
+var H_LEFT_INDENT = 160, H_CONTENT_INDENT = 280;
+var H_ROW_HEIGHT = 25;
+var H_BUTTON_INDENT = 120;
+var H_TEXTAREA_WIDTH = 450;
 
 function TaskViewTable(task) {
 	// using a table we can achieve the label text-area look we want for this page
@@ -42,37 +50,49 @@ function TaskViewTable(task) {
 	 * on orientation change
 	 */
 	self.reorientTable = function(orientation) {
-		var allFields = [description_label, descriptionContent, startLabel, startValue, endLabel, endValue];
-		var LEFT_ADJUST = 150;
-		var ROWHEIGHT_ADJUST = 15;
-		var WIDTH_FACTOR = 1.5;
-		var OKCANCEL_FACTOR = 12;
+		var labelFields = [description_label, startLabel, endLabel];
+		var contentFields = [descriptionContent, startValue, endValue];
+		var okButtons = [startPickerOK, endPickerOK];
+		var cancelButtons = [startPickerCancel, endPickerCancel];
 
 		if (orientation == Ti.UI.PORTRAIT) {
-			allFields.map(function(field) {
-				field.setLeft(field.left - LEFT_ADJUST);
-				field.setHeight(field.height + ROWHEIGHT_ADJUST);
+			labelFields.map(function(field) {
+				field.setLeft(LEFT_INDENT);
+				field.setHeight(ROW_HEIGHT);
 			});
-			textArea.setWidth(textArea.width / WIDTH_FACTOR);
-
-			startPickerCancel.setLeft(startPickerCancel.left / OKCANCEL_FACTOR);
-			startPickerOK.setRight(startPickerOK.right / OKCANCEL_FACTOR);
-
-			endPickerCancel.setLeft(endPickerCancel.left / OKCANCEL_FACTOR);
-			endPickerOK.setRight(endPickerOK.right / OKCANCEL_FACTOR);
-			
-		} else if (orientation == Ti.UI.LANDSCAPE_LEFT || orientation == Ti.UI.LANDSCAPE_RIGHT){
-			allFields.map(function(field) {
-				field.setLeft(field.left + LEFT_ADJUST);
-				field.setHeight(field.height - ROWHEIGHT_ADJUST);
+			contentFields.map(function(field){
+				field.setLeft(CONTENT_INDENT);
+				field.setHeight(ROW_HEIGHT);
 			});
-			textArea.setWidth(textArea.width * WIDTH_FACTOR);
 
-			startPickerCancel.setLeft(startPickerCancel.left * OKCANCEL_FACTOR);
-			startPickerOK.setRight(startPickerOK.right * OKCANCEL_FACTOR);
+			okButtons.map(function(button) {
+				button.setRight(BUTTON_INDENT);
+			});
+			cancelButtons.map(function(button) {
+				button.setLeft(BUTTON_INDENT);
+			});
 
-			endPickerCancel.setLeft(endPickerCancel.left * OKCANCEL_FACTOR);
-			endPickerOK.setRight(endPickerOK.right * OKCANCEL_FACTOR);
+			textArea.setWidth(TEXTAREA_WIDTH);
+
+		} else if (orientation == Ti.UI.LANDSCAPE_LEFT || orientation == Ti.UI.LANDSCAPE_RIGHT) {
+			labelFields.map(function(field) {
+				field.setLeft(H_LEFT_INDENT);
+				field.setHeight(H_ROW_HEIGHT);
+			});
+			contentFields.map(function(field){
+				field.setLeft(H_CONTENT_INDENT);
+				field.setHeight(H_ROW_HEIGHT);
+			});
+
+
+			okButtons.map(function(button) {
+				button.setRight(H_BUTTON_INDENT);
+			});
+			cancelButtons.map(function(button) {
+				button.setLeft(H_BUTTON_INDENT);
+			});
+
+			textArea.setWidth(H_TEXTAREA_WIDTH);
 		}
 	};
 
@@ -116,7 +136,7 @@ function TaskViewTable(task) {
 	var description_label = Ti.UI.createLabel({
 		text : L('description'),
 		color : util.TaskViewColor.TEXT_COLOR,
-		left : 10,
+		left : LEFT_INDENT,
 		width : LABEL_WIDTH,
 		height : ROW_HEIGHT,
 		textAlign : Ti.UI.TEXT_ALIGNMENT_RIGHT,
@@ -126,7 +146,7 @@ function TaskViewTable(task) {
 	});
 
 	var descriptionContent = Ti.UI.createLabel({
-		left : FIELD_LEFT,
+		left : CONTENT_INDENT,
 		width : FIELD_WIDTH,
 		height : ROW_HEIGHT,
 		color : util.TaskViewColor.TEXT_COLOR,
@@ -151,8 +171,8 @@ function TaskViewTable(task) {
 	 */
 	var textArea = Ti.UI.createTextArea({
 		value : task.descriptionForTaskView,
-		height : 150,
-		width : 300,
+		height : TEXTAREA_HEIGHT,
+		width : TEXTAREA_WIDTH,
 		returnKeyType : Ti.UI.RETURNKEY_DONE
 	});
 
@@ -174,7 +194,7 @@ function TaskViewTable(task) {
 	 */
 	var startLabel = Ti.UI.createLabel({
 		text : L('start_time'),
-		left : 10,
+		left : LEFT_INDENT,
 		width : LABEL_WIDTH,
 		height : ROW_HEIGHT,
 		color : util.TaskViewColor.TEXT_COLOR,
@@ -187,7 +207,7 @@ function TaskViewTable(task) {
 	var startValue = Ti.UI.createLabel({
 		text : util.prettyTime(task.start),
 		date : task.start,
-		left : FIELD_LEFT,
+		left : CONTENT_INDENT,
 		width : FIELD_WIDTH,
 		height : ROW_HEIGHT,
 		color : util.TaskViewColor.TEXT_COLOR,
@@ -223,7 +243,7 @@ function TaskViewTable(task) {
 	var startPickerOK = Ti.UI.createButton({
 		title : L('ok'),
 		top : 5,
-		right : 10,
+		right : BUTTON_INDENT,
 		color : util.TaskViewColor.TEXT_COLOR,
 		font : {
 			fontSize : 10
@@ -240,7 +260,7 @@ function TaskViewTable(task) {
 		title : L('cancel'),
 		color : util.TaskViewColor.TEXT_COLOR,
 		top : 5,
-		left : 10,
+		left : BUTTON_INDENT,
 		font : {
 			fontSize : 10
 		}
@@ -264,7 +284,7 @@ function TaskViewTable(task) {
 	 */
 	var endLabel = Ti.UI.createLabel({
 		text : L('end_time'),
-		left : 10,
+		left : LEFT_INDENT,
 		width : LABEL_WIDTH,
 		height : ROW_HEIGHT,
 		color : util.TaskViewColor.TEXT_COLOR,
@@ -276,7 +296,7 @@ function TaskViewTable(task) {
 
 	var endValue = Ti.UI.createLabel({
 		text : util.prettyTime(task.end),
-		left : FIELD_LEFT,
+		left : CONTENT_INDENT,
 		width : FIELD_WIDTH,
 		height : ROW_HEIGHT,
 		right : 10,
@@ -312,7 +332,7 @@ function TaskViewTable(task) {
 	var endPickerOK = Ti.UI.createButton({
 		title : L('ok'),
 		top : 5,
-		right : 10,
+		right : BUTTON_INDENT,
 		color : util.TaskViewColor.TEXT_COLOR,
 		font : {
 			fontSize : 10
@@ -329,7 +349,7 @@ function TaskViewTable(task) {
 		title : L('cancel'),
 		color : util.TaskViewColor.TEXT_COLOR,
 		top : 5,
-		left : 10,
+		left : BUTTON_INDENT,
 		font : {
 			fontSize : 10
 		}

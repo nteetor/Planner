@@ -7,7 +7,7 @@ function TasksWindow(containingTab) {
 		title : L('tasks'),
 		layout : 'vertical',
 		backgroundColor : util.TasksWindowColor.BACKGROUND_COLOR,
-		statusBarStyle : Titanium.UI.iPhone.StatusBar.LIGHT_CONTENT,
+		//statusBarStyle : Titanium.UI.iPhone.StatusBar.LIGHT_CONTENT,
 		tintColor : util.TasksWindowColor.TINT_COLOR,
 		barColor : util.TasksWindowColor.BAR_COLOR,
 		navTintColor : util.TasksWindowColor.TINT_COLOR,

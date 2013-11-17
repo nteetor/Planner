@@ -18,19 +18,20 @@ function TaskView(task) {
 	task.end = new Date(task.end);
 	task.descriptionForTaskView = task.descriptionForTaskView || '';
 
-	var CHANGE_FACTOR = 4;
+	var BUTTON_INDENT = 25;
+	var H_BUTTON_INDENT = 100;
+	
 	Ti.Gesture.addEventListener('orientationchange', function(e) {
-
 		if (e.orientation == Ti.UI.PORTRAIT) {
 			fields_table.reorientTable(e.orientation);
 
-			ok.setRight(ok.right / CHANGE_FACTOR);
-			cancel.setLeft(cancel.left / CHANGE_FACTOR);
+			ok.setRight(BUTTON_INDENT);
+			cancel.setLeft(BUTTON_INDENT);
 		} else if (e.orientation == Ti.UI.LANDSCAPE_LEFT || e.orientation == Ti.UI.LANDSCAPE_RIGHT) {
 			fields_table.reorientTable(e.orientation);
 
-			ok.setRight(ok.right * CHANGE_FACTOR);
-			cancel.setLeft(cancel.left * CHANGE_FACTOR);
+			ok.setRight(H_BUTTON_INDENT);
+			cancel.setLeft(H_BUTTON_INDENT);
 		}
 	});
 
@@ -118,8 +119,8 @@ function TaskView(task) {
 	if (Ti.Gesture.isLandscape()) {
 		fields_table.reorientTable(Ti.Gesture.getOrientation());
 
-		ok.setRight(ok.right * CHANGE_FACTOR);
-		cancel.setLeft(cancel.left * CHANGE_FACTOR);
+		ok.setRight(H_BUTTON_INDENT);
+		cancel.setLeft(H_BUTTON_INDENT);
 	}
 
 	return self;
