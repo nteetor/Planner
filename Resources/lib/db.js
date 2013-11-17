@@ -74,6 +74,10 @@ exports.del = function(id) {
 	db.execute('DELETE FROM todos WHERE id = ?', id);
 	db.close();
 	Ti.App.fireEvent("databaseUpdated");
+	Ti.API.fireEvent('setCalDate', {
+		date : new Date(Ti.App.Properties.getObject('focus_date')),
+		force: true
+	});
 };
 
 // updates the database using the todo object parameter
