@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ti:app xmlns:ti="http://ti.appcelerator.org">
-    <id>edu.oberlin.CS321.jrat-nteet</id>
+<?xml version="1.0" encoding="UTF-8"?><ti:app xmlns:ti="http://ti.appcelerator.org">
+    <id>edu.oberlin.CS321jratnteet</id>
     <name>Planner</name>
     <version>1.0</version>
     <publisher>Teetor</publisher>
@@ -42,7 +41,7 @@
     </mobileweb>
     <modules/>
     <deployment-targets>
-        <target device="android">false</target>
+        <target device="android">true</target>
         <target device="blackberry">false</target>
         <target device="ipad">true</target>
         <target device="iphone">true</target>
@@ -50,4 +49,5 @@
         <target device="tizen">false</target>
     </deployment-targets>
     <sdk-version>3.1.2.GA</sdk-version>
+    <property name="ti.deploytype">development</property>
 </ti:app>

@@ -17,7 +17,7 @@ function CalendarWindow(openTaskDayFunction) {
 	});
 	
 
-	var focus_date = Ti.App.Properties.getObject('focus_date');
+	var focus_date = new Date(Ti.App.Properties.getObject('focus_date'));
 	Ti.App.Properties.addEventListener('change', function() {
 		focus_date = Ti.App.Properties.getObject('focus_date');
 		Ti.API.fireEvent('setCalDate', {

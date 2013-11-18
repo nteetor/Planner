@@ -128,10 +128,52 @@ function TasksWindow(containingTab) {
 	* The set of buttons for the task window toolbar
 	*/
 	// ADD button
-	var add = Ti.UI.createButton({
-		systemButton : Titanium.UI.iPhone.SystemButton.ADD,
-		color : util.TasksWindowColor.TEXT_COLOR
-	});
+	// DELETE button
+	var del, edit, done, add;
+	if (Ti.Platform.osname == 'android') {
+		done = Ti.UI.createButton({
+			text: 'Done',
+			enabled : false,
+			color : util.TasksWindowColor.TEXT_COLOR
+		});
+		del = Ti.UI.createButton({
+			text: 'Delete',
+			enabled : (tasks_list.length > 0),
+			color : util.TasksWindowColor.TEXT_COLOR
+		});
+		add = Ti.UI.createButton({
+			text: '+',
+			color : util.TasksWindowColor.TEXT_COLOR
+		});
+		edit = Ti.UI.createButton({
+			text: 'Edit',
+			enabled : (tasks_list.length > 0),
+			color : util.TasksWindowColor.TEXT_COLOR
+		});
+	} else {
+		del = Ti.UI.createButton({
+			systemButton : Titanium.UI.iPhone.SystemButton.TRASH,
+			enabled : (tasks_list.length > 0),
+			color : util.TasksWindowColor.TEXT_COLOR
+		});
+		edit = Ti.UI.createButton({
+			systemButton : Titanium.UI.iPhone.SystemButton.EDIT,
+			enabled : (tasks_list.length > 0),
+			color : util.TasksWindowColor.TEXT_COLOR,
+			backgroundImage : 'none'
+		});
+		done = Ti.UI.createButton({
+			systemButton : Titanium.UI.iPhone.SystemButton.DONE,
+			title : '+',
+			enabled : false,
+			color : util.TasksWindowColor.TEXT_COLOR
+		});
+		add = Ti.UI.createButton({
+			systemButton : Titanium.UI.iPhone.SystemButton.ADD,
+			color : util.TasksWindowColor.TEXT_COLOR
+		});
+	}
+	
 	add.addEventListener('click', function(e) {
 		openTask({
 			start : focus_date,
@@ -139,15 +181,7 @@ function TasksWindow(containingTab) {
 			description : ''
 		});
 	});
-
-	// EDIT button
-	var edit = Ti.UI.createButton({
-		systemButton : Titanium.UI.iPhone.SystemButton.EDIT,
-		enabled : (tasks_list.length > 0),
-		color : util.TasksWindowColor.TEXT_COLOR,
-		backgroundImage : 'none'
-	});
-
+	
 	edit.addEventListener('click', function(e) {
 		done.setEnabled(true);
 		del.setEnabled(false);
@@ -161,13 +195,6 @@ function TasksWindow(containingTab) {
 		tasks_table.setMoving(true);
 	});
 
-	// DELETE button
-	var del = Ti.UI.createButton({
-		systemButton : Titanium.UI.iPhone.SystemButton.TRASH,
-		enabled : (tasks_list.length > 0),
-		color : util.TasksWindowColor.TEXT_COLOR
-	});
-
 	del.addEventListener('click', function(e) {
 		edit.setEnabled(false);
 		done.setEnabled(true);
@@ -175,14 +202,6 @@ function TasksWindow(containingTab) {
 
 		tasks_table.setFocusable(false);
 		tasks_table.setEditing(true);
-	});
-
-	// DONE button
-	var done = Ti.UI.createButton({
-		systemButton : Titanium.UI.iPhone.SystemButton.DONE,
-		title : '+',
-		enabled : false,
-		color : util.TasksWindowColor.TEXT_COLOR
 	});
 
 	done.addEventListener('click', function(e) {
@@ -217,9 +236,16 @@ function TasksWindow(containingTab) {
 	});
 
 	// set the toolbar for our window using the above buttons
-	self.setToolbar([add, util.flexSpace, edit, util.flexSpace, del, util.flexSpace, done], params = {
-		animated : false
-	});
+	if (Ti.Platform.osname == 'android') {
+		self.add(add);
+		self.add(edit);
+		self.add(del);
+		self.add(done);
+	} else {
+		self.setToolbar([add, util.flexSpace, edit, util.flexSpace, del, util.flexSpace, done], params = {
+			animated : false
+		});
+	}
 
 	return self;
 }
